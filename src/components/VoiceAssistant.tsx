@@ -196,7 +196,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
                 msg.sender === 'user' 
                   ? 'bg-orange-600 text-white rounded-tr-none' 
-                  : 'bg-white dark:bg-slate-850 text-slate-805 dark:text-slate-100 rounded-tl-none border border-slate-200 dark:border-slate-700'
+                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200 dark:border-slate-700'
               }`}>
                 <div className="flex items-center gap-1.5 mb-1.5 opacity-75 text-[10px]">
                   {msg.sender === 'user' ? <User className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
