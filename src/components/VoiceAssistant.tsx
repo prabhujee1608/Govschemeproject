@@ -196,24 +196,24 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
                 msg.sender === 'user' 
                   ? 'bg-orange-600 text-white rounded-tr-none' 
-                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200 dark:border-slate-700'
+                  : 'bg-white text-slate-800 rounded-tl-none border border-slate-200 shadow-sm'
               }`}>
-                <div className="flex items-center gap-1.5 mb-1.5 opacity-75 text-[10px]">
+                <div className="flex items-center gap-1.5 mb-1.5 opacity-75 text-[10px] text-slate-500">
                   {msg.sender === 'user' ? <User className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
                   <span>{msg.sender === 'user' ? 'Citizen' : 'Vaani-Setu AI'}</span>
                 </div>
-                <p className="leading-relaxed">{msg.text}</p>
+                <p className="leading-relaxed text-slate-800">{msg.text}</p>
 
                 {/* Inline matched cards helper */}
                 {msg.matchedSchemes && msg.matchedSchemes.length > 0 && (
-                  <div className="mt-3.5 pt-3 border-t border-slate-100 dark:border-slate-700 space-y-2 text-slate-900 dark:text-white">
-                    <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Potential matches found:</p>
+                  <div className="mt-3.5 pt-3 border-t border-slate-100 space-y-2 text-slate-900">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Potential matches found:</p>
                     {msg.matchedSchemes.map(sch => (
-                      <div key={sch.id} className="p-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-750 hover:border-orange-500 transition flex items-center justify-between gap-2">
-                        <span className="text-xs font-bold truncate pr-2">{sch.name}</span>
+                      <div key={sch.id} className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-orange-500 transition flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold truncate pr-2 text-slate-800">{sch.name}</span>
                         <button
                           onClick={() => onSelectScheme(sch)}
-                          className="text-[10px] font-bold text-orange-600 dark:text-orange-400 hover:underline flex-shrink-0 flex items-center"
+                          className="text-[10px] font-bold text-orange-600 hover:underline flex-shrink-0 flex items-center"
                         >
                           Details <ChevronRight className="h-3 w-3" />
                         </button>

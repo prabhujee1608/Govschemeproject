@@ -48,23 +48,23 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search bar */}
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Search Keywords</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Search Keywords</label>
             <input
               type="text"
               placeholder="e.g. Farmer, Health, Loan, Sukanya..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-slate-350 dark:border-slate-650 bg-white dark:bg-slate-750 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-slate-800 dark:text-white"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-slate-800"
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Scheme Category</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Scheme Category</label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full rounded-lg border border-slate-350 dark:border-slate-650 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-slate-750 text-slate-800 dark:text-white"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-slate-800"
             >
               {categories.map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -74,11 +74,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
           {/* Area */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Region / Location Type</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Region / Location Type</label>
             <select
               value={selectedRuralUrban}
               onChange={(e) => setSelectedRuralUrban(e.target.value)}
-              className="w-full rounded-lg border border-slate-350 dark:border-slate-650 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-slate-750 text-slate-800 dark:text-white"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-slate-800"
             >
               <option value="All">All Regions</option>
               <option value="Rural">Rural (गांव)</option>
