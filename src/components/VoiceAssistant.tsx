@@ -119,10 +119,21 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       setMessages(prev => [...prev, botMsg]);
       setIsProcessing(false);
 
-      // Trigger Text-to-Speech if supported
+      // Trigger Text-to-Speech mapping to user selection
       if ('speechSynthesis' in window) {
         const speech = new SpeechSynthesisUtterance(result.reply.replace(/<\/?[^>]+(>|$)/g, ""));
-        speech.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+        const langMapping: { [key: string]: string } = {
+          hi: 'hi-IN',
+          en: 'en-IN',
+          bn: 'bn-IN',
+          mr: 'mr-IN',
+          ta: 'ta-IN',
+          kn: 'kn-IN',
+          te: 'te-IN',
+          gu: 'gu-IN',
+          pa: 'pa-IN'
+        };
+        speech.lang = langMapping[language] || 'hi-IN';
         window.speechSynthesis.speak(speech);
       }
     }, 1500);
@@ -135,7 +146,19 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       if (SpeechRecognition) {
         const recognition = new SpeechRecognition();
         recognition.continuous = false;
-        recognition.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+        
+        const langMapping: { [key: string]: string } = {
+          hi: 'hi-IN',
+          en: 'en-IN',
+          bn: 'bn-IN',
+          mr: 'mr-IN',
+          ta: 'ta-IN',
+          kn: 'kn-IN',
+          te: 'te-IN',
+          gu: 'gu-IN',
+          pa: 'pa-IN'
+        };
+        recognition.lang = langMapping[language] || 'hi-IN';
         recognition.interimResults = false;
 
         recognition.onstart = () => {

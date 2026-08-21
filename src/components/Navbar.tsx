@@ -13,11 +13,15 @@ interface NavbarProps {
 }
 
 export const languages = [
-  { code: 'hi', label: 'हिन्दी' },
+  { code: 'hi', label: 'हिन्दी (Hindi)' },
   { code: 'en', label: 'English' },
-  { code: 'bn', label: 'বাংলা' },
-  { code: 'mr', label: 'मराठी' },
-  { code: 'ta', label: 'தமிழ்' }
+  { code: 'bn', label: 'বাংলা (Bengali)' },
+  { code: 'mr', label: 'मराठी (Marathi)' },
+  { code: 'ta', label: 'தமிழ் (Tamil)' },
+  { code: 'kn', label: 'ಕನ್ನಡ (Kannada)' },
+  { code: 'te', label: 'తెలుగు (Telugu)' },
+  { code: 'gu', label: 'ગુજરાતી (Gujarati)' },
+  { code: 'pa', label: 'ਪੰਜਾਬੀ (Punjabi)' }
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({
