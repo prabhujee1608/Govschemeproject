@@ -294,7 +294,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(inputText)}
               disabled={isListening}
-              className="flex-1 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-750 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-slate-800 dark:text-white"
+              className="flex-1 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-black placeholder-slate-400"
             />
 
             <button
