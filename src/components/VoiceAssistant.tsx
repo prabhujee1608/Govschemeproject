@@ -1,6 +1,7 @@
 import React from 'react';
 import { Mic, MicOff, Globe, Sparkles, Send, Bot, User, CheckCircle2, ChevronRight, CornerDownRight } from 'lucide-react';
 import { Scheme } from '@/data/schemes';
+import { t } from '../data/translations';
 
 interface VoiceAssistantProps {
   schemes: Scheme[];
@@ -22,14 +23,19 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   language
 }) => {
   const [isListening, setIsListening] = React.useState(false);
-  const [messages, setMessages] = React.useState<Message[]>([
-    {
-      sender: 'bot',
-      text: "नमस्ते! मैं वाणी-सेतु AI सहायक हूँ। मुझे अपने बारे में बताएँ ताकि मैं आपके लिए सही सरकारी योजनाएँ खोज सकूँ। (Hello! I am Vaani-Setu AI. Tell me about yourself to match government schemes.)"
-    }
-  ]);
+  const [messages, setMessages] = React.useState<Message[]>([]);
   const [inputText, setInputText] = React.useState('');
   const [isProcessing, setIsProcessing] = React.useState(false);
+
+  // Initialize and update greeting message when language changes
+  React.useEffect(() => {
+    setMessages([
+      {
+        sender: 'bot',
+        text: t("assist.welcome", language)
+      }
+    ]);
+  }, [language]);
 
   // Fallback simulation text triggers
   const getSimulatedResponse = (text: string): { reply: string; matches: Scheme[] } => {
@@ -39,7 +45,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       const pmKisan = schemes.find(s => s.id === 'pm-kisan');
       const pmKusum = schemes.find(s => s.id === 'pm-kusum');
       return {
-        reply: "किसान परिवारों और कृषि हेतु 'PM-KISAN' तथा सोलर पंप स्थापना व बंजर भूमि उपयोग के लिए 'PM-KUSUM' योजनाएं प्रासंगिक हैं। नीचे दी गई योजनाओं को देखें:",
+        reply: t("reply.kisan", language),
         matches: [pmKisan, pmKusum].filter(Boolean) as Scheme[]
       };
     }
@@ -48,7 +54,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       const ayushman = schemes.find(s => s.id === 'ayushman-bharat');
       const insurance = schemes.find(s => s.id === 'pm-jeevan-suraksha');
       return {
-        reply: "चिकित्सा सहायता एवं स्वास्थ्य बीमा हेतु 'Ayushman Bharat (PM-JAY)' (₹5 लाख तक मुफ्त इलाज) तथा 'PM Jeevan Jyoti & Suraksha Bima' (किफायती जीवन व दुर्घटना बीमा) प्रासंगिक हैं:",
+        reply: t("reply.health", language),
         matches: [ayushman, insurance].filter(Boolean) as Scheme[]
       };
     }
@@ -58,7 +64,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       const jandhan = schemes.find(s => s.id === 'pm-jandhan');
       const insurance = schemes.find(s => s.id === 'pm-jeevan-suraksha');
       return {
-        reply: "वृद्धावस्था पेंशन और वित्तीय सुरक्षा हेतु 'Atal Pension Yojana', बैंकिंग सुविधाओं के लिए 'PM Jan Dhan Yojana' तथा बीमा के लिए 'PM Jeevan Jyoti & Suraksha Bima' मुख्य रूप से अनुकूल हैं:",
+        reply: t("reply.pension", language),
         matches: [atal, jandhan, insurance].filter(Boolean) as Scheme[]
       };
     }
@@ -68,7 +74,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       const matru = schemes.find(s => s.id === 'pm-matru-vandana');
       const ujjwala = schemes.find(s => s.id === 'pm-ujjwala');
       return {
-        reply: "महिला एवं बाल विकास कल्याण हेतु 'Sukanya Samriddhi Yojana' (बचत योजना), 'PM Matru Vandana Yojana' (गर्भवती माताओं के लिए नकद पोषण लाभ) तथा 'PM Ujjwala Yojana' (मुफ्त गैस कनेक्शन) उपलब्ध हैं:",
+        reply: t("reply.women", language),
         matches: [ssy, matru, ujjwala].filter(Boolean) as Scheme[]
       };
     }
@@ -77,7 +83,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       const pmay = schemes.find(s => s.id === 'pm-awas-yojana');
       const surya = schemes.find(s => s.id === 'pm-surya-ghar');
       return {
-        reply: "कम आय परिवारों के लिए पक्का मकान निर्माण हेतु 'Pradhan Mantri Awas Yojana' तथा 300 यूनिट मुफ्त बिजली हेतु 'PM Surya Ghar' योजनाएं उपलब्ध हैं:",
+        reply: t("reply.housing", language),
         matches: [pmay, surya].filter(Boolean) as Scheme[]
       };
     }
@@ -87,14 +93,14 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       const vishwakarma = schemes.find(s => s.id === 'pm-vishwakarma');
       const pmkvy = schemes.find(s => s.id === 'pm-kaushal-vikas');
       return {
-        reply: "कौशल विकास व ग्रामीण रोजगार के लिए 'MGNREGA' (100 दिन की रोजगार गारंटी), 'PM Vishwakarma Yojana' (पारंपरिक कारीगरों के लिए औजार व लोन) तथा 'PM Kaushal Vikas Yojana' (मुफ्त स्किल कोर्स) अनुकूल हैं:",
+        reply: t("reply.jobs", language),
         matches: [mgnrega, vishwakarma, pmkvy].filter(Boolean) as Scheme[]
       };
     }
 
     // Default general response
     return {
-      reply: "आपकी जानकारी दर्ज कर ली गई है। यहाँ हमारे डेटाबेस से कुछ मुख्य कल्याणकारी योजनाएँ दी गई हैं जो आपके लिए अनुकूल हो सकती हैं:",
+      reply: t("reply.default", language),
       matches: schemes.slice(0, 3)
     };
   };
@@ -136,7 +142,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         speech.lang = langMapping[language] || 'hi-IN';
         window.speechSynthesis.speak(speech);
       }
-    }, 1500);
+    }, 1550);
   };
 
   // Browser Speech Recognition triggers
@@ -205,8 +211,12 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           <div className="flex items-center gap-2">
             <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
             <div>
-              <h3 className="text-sm font-bold tracking-wide">Vaani-Setu Assistant</h3>
-              <p className="text-[10px] text-slate-300 dark:text-slate-400">Supported in Hindi / English / regional</p>
+              <h3 className="text-sm font-bold tracking-wide">
+                {language === 'hi' ? 'वाणी-सेतु सहायक' : 'Vaani-Setu Assistant'}
+              </h3>
+              <p className="text-[10px] text-slate-300 dark:text-slate-400">
+                {language === 'hi' ? 'हिंदी / अंग्रेजी / क्षेत्रीय भाषाओं में समर्थित' : 'Supported in Hindi / English / regional'}
+              </p>
             </div>
           </div>
           <Sparkles className="h-4.5 w-4.5 text-orange-400" />
@@ -223,14 +233,16 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               }`}>
                 <div className="flex items-center gap-1.5 mb-1.5 opacity-75 text-[10px] text-slate-500">
                   {msg.sender === 'user' ? <User className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                  <span>{msg.sender === 'user' ? 'Citizen' : 'Vaani-Setu AI'}</span>
+                  <span>{msg.sender === 'user' ? (language === 'hi' ? 'नागरिक' : 'Citizen') : 'Vaani-Setu AI'}</span>
                 </div>
                 <p className="leading-relaxed text-slate-800">{msg.text}</p>
 
                 {/* Inline matched cards helper */}
                 {msg.matchedSchemes && msg.matchedSchemes.length > 0 && (
                   <div className="mt-3.5 pt-3 border-t border-slate-100 space-y-2 text-slate-900">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Potential matches found:</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                      {language === 'hi' ? 'संभावित मिलान मिले:' : 'Potential matches found:'}
+                    </p>
                     {msg.matchedSchemes.map(sch => (
                       <div key={sch.id} className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-orange-500 transition flex items-center justify-between gap-2">
                         <span className="text-xs font-bold truncate pr-2 text-slate-800">{sch.name}</span>
@@ -238,7 +250,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                           onClick={() => onSelectScheme(sch)}
                           className="text-[10px] font-bold text-orange-600 hover:underline flex-shrink-0 flex items-center"
                         >
-                          Details <ChevronRight className="h-3 w-3" />
+                          {language === 'hi' ? 'विवरण' : 'Details'} <ChevronRight className="h-3 w-3" />
                         </button>
                       </div>
                     ))}
@@ -254,7 +266,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 <span className="h-2 w-2 rounded-full bg-slate-400 dark:bg-slate-600 animate-bounce" style={{ animationDelay: '0ms' }} />
                 <span className="h-2 w-2 rounded-full bg-slate-400 dark:bg-slate-600 animate-bounce" style={{ animationDelay: '150ms' }} />
                 <span className="h-2 w-2 rounded-full bg-slate-400 dark:bg-slate-600 animate-bounce" style={{ animationDelay: '300ms' }} />
-                <span>AI typing response...</span>
+                <span>{language === 'hi' ? 'एआई जवाब खोज रहा है...' : 'AI typing response...'}</span>
               </div>
             </div>
           )}
@@ -266,34 +278,34 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           {/* Quick chip queries */}
           <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-none">
             <button
-              onClick={() => handleSendMessage("मैं एक गरीब किसान हूँ, मुझे खेती के लिए सहायता चाहिए")}
+              onClick={() => handleSendMessage(language === 'hi' ? "मैं एक गरीब किसान हूँ, मुझे खेती के लिए सहायता चाहिए" : "I am a poor farmer, I need agricultural support")}
               className="text-[11px] font-semibold text-slate-650 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-650 px-2.5 py-1 rounded-full whitespace-nowrap transition"
             >
-              🌾 Farmer Scheme (किसान योजना)
+              {t("assist.sample.kisan", language)}
             </button>
             <button
-              onClick={() => handleSendMessage("I am looking for health insurance for my family")}
+              onClick={() => handleSendMessage(language === 'hi' ? "मुझे अपने परिवार के लिए स्वास्थ्य बीमा की आवश्यकता है" : "I am looking for health insurance for my family")}
               className="text-[11px] font-semibold text-slate-650 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-650 px-2.5 py-1 rounded-full whitespace-nowrap transition"
             >
-              🏥 Medical Help (चिकित्सा/इलाज)
+              {t("assist.sample.health", language)}
             </button>
             <button
-              onClick={() => handleSendMessage("Tell me about insurance coverage")}
+              onClick={() => handleSendMessage(language === 'hi' ? "पेंशन या बीमा योजनाओं के बारे में बताएं" : "Tell me about pension or insurance schemes")}
               className="text-[11px] font-semibold text-slate-650 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-650 px-2.5 py-1 rounded-full whitespace-nowrap transition"
             >
-              🛡️ Life & Accident Insurance (बीमा)
+              {t("assist.sample.pension", language)}
             </button>
             <button
-              onClick={() => handleSendMessage("I need skill training and rural jobs")}
+              onClick={() => handleSendMessage(language === 'hi' ? "मुझे कौशल विकास और ग्रामीण रोजगार चाहिए" : "I need skill training and rural jobs")}
               className="text-[11px] font-semibold text-slate-650 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-650 px-2.5 py-1 rounded-full whitespace-nowrap transition"
             >
-              🛠️ Skills & Jobs (रोजगार)
+              {t("assist.sample.jobs", language)}
             </button>
             <button
-              onClick={() => handleSendMessage("What schemes are available for heavy rain or water pumps?")}
+              onClick={() => handleSendMessage(language === 'hi' ? "किफायती आवास या सोलर रूफटॉप योजनाएं" : "Affordable housing or solar rooftop schemes")}
               className="text-[11px] font-semibold text-slate-650 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-650 px-2.5 py-1 rounded-full whitespace-nowrap transition"
             >
-              🌧️ Solar Pumps / Rain (बारिश)
+              {t("assist.sample.housing", language)}
             </button>
           </div>
 
@@ -312,7 +324,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
             <input
               type="text"
-              placeholder={isListening ? "Listening... Speak now" : "Type your query here..."}
+              placeholder={isListening ? t("assist.listening", language) : t("assist.placeholder", language)}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(inputText)}
@@ -334,16 +346,25 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       {/* Right Information Window */}
       <div className="lg:col-span-5 p-6 bg-white dark:bg-slate-800 flex flex-col justify-between">
         <div>
-          <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">Matched Profile & Actions</span>
-          <h4 className="text-base font-bold text-indigo-950 dark:text-white mt-1 mb-4">Eligible Scheme Quick View</h4>
+          <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
+            {language === 'hi' ? 'मिलान प्रोफाइल और क्रियाएं' : 'Matched Profile & Actions'}
+          </span>
+          <h4 className="text-base font-bold text-indigo-950 dark:text-white mt-1 mb-4">
+            {language === 'hi' ? 'योग्य योजना त्वरित दृश्य' : 'Eligible Scheme Quick View'}
+          </h4>
           
-          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
-            Vaani-Setu extracts factors like location, earnings, and family size to filter our national welfare database.
+          <p className="text-xs text-slate-550 dark:text-slate-405 leading-relaxed mb-4">
+            {language === 'hi'
+              ? 'वाणी-सेतु हमारे राष्ट्रीय कल्याण डेटाबेस को फ़िल्टर करने के लिए स्थान, कमाई और परिवार के आकार जैसे कारकों को निकालता है।'
+              : 'Vaani-Setu extracts factors like location, earnings, and family size to filter our national welfare database.'
+            }
           </p>
 
           <div className="space-y-3.5">
             <div className="p-3.5 bg-orange-50/50 dark:bg-orange-955/10 rounded-xl border border-orange-100 dark:border-orange-900/30 text-xs">
-              <span className="font-bold text-orange-850 dark:text-orange-400">🎙 Voice Waveform</span>
+              <span className="font-bold text-orange-850 dark:text-orange-400">
+                {language === 'hi' ? '🎙 वॉयस वेवफॉर्म' : '🎙 Voice Waveform'}
+              </span>
               <div className="flex items-center gap-1.5 mt-2 h-6">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((val) => (
                   <span 
@@ -358,16 +379,24 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             </div>
 
             <div className="p-3.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900/30 text-xs">
-              <span className="font-bold text-slate-800 dark:text-slate-200 block mb-1">Interactive Help Parameters</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200 block mb-1">
+                {language === 'hi' ? 'इंटरैक्टिव सहायता पैरामीटर' : 'Interactive Help Parameters'}
+              </span>
               <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-                Click the microphone icon and speak in Hindi or English (e.g. "I am a poor farmer"). The AI voice synthesis responds with matches.
+                {language === 'hi'
+                  ? 'माइक आइकन पर क्लिक करें और हिंदी या अंग्रेजी में बोलें (जैसे "मैं एक गरीब किसान हूँ")। एआई आवाज संश्लेषण मिलान के साथ प्रतिक्रिया करता है।'
+                  : 'Click the microphone icon and speak in Hindi or English (e.g. "I am a poor farmer"). The AI voice synthesis responds with matches.'
+                }
               </p>
             </div>
           </div>
         </div>
 
         <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 text-[10px] text-slate-400 dark:text-slate-550 text-center">
-          Prototype matches are advisory. Final approvals require verified official portals.
+          {language === 'hi'
+            ? 'प्रोटोटाइप मिलान केवल सलाह के लिए हैं। अंतिम मंजूरी के लिए आधिकारिक पोर्टल से सत्यापन आवश्यक है।'
+            : 'Prototype matches are advisory. Final approvals require verified official portals.'
+          }
         </div>
       </div>
 

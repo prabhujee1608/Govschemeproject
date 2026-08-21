@@ -13,6 +13,31 @@ import { ArchitectureDiagram } from '@/components/ArchitectureDiagram';
 import { schemesData, Scheme } from '@/data/schemes';
 import { Mic, ArrowRight, ShieldAlert, Sparkles, BookOpen, HeartPulse, Tractor, HandCoins, AlertCircle, FileCheck, CheckCircle2, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { t } from '@/data/translations';
+const docTranslations: Record<string, Record<string, string>> = {
+  "Aadhaar Card": { "hi": "आधार कार्ड" },
+  "Land Ownership Documents": { "hi": "भूमि स्वामित्व दस्तावेज" },
+  "Bank Account Details": { "hi": "बैंक खाता विवरण" },
+  "Mobile Number linked with Aadhaar": { "hi": "आधार से लिंक मोबाइल नंबर" },
+  "Ration Card": { "hi": "राशन कार्ड" },
+  "Income Certificate": { "hi": "आय प्रमाण पत्र" },
+  "Affidavit of no pucca house": { "hi": "पक्के मकान न होने का हलफनामा" },
+  "Bank Account Passbook": { "hi": "बैंक पासबुक विवरण" },
+  "Mudra Application Form": { "hi": "मुद्रा आवेदन पत्र" },
+  "Business Plan": { "hi": "व्यावसायिक योजना" },
+  "PAN Card": { "hi": "पैन कार्ड" },
+  "Address Proof of Business": { "hi": "व्यवसाय के पते का प्रमाण" },
+  "Electricity Bill": { "hi": "बिजली बिल" },
+  "Rooftop Ownership Proof": { "hi": "छत के स्वामित्व का प्रमाण" },
+  "BPL Ration Card": { "hi": "बीपीएल राशन कार्ड" },
+  "Address Proof": { "hi": "पते का प्रमाण" },
+  "Caste Certificate": { "hi": "जाति प्रमाण पत्र" },
+  "Age Proof": { "hi": "आयु प्रमाण पत्र" },
+  "Disability Certificate": { "hi": "विकलांगता प्रमाण पत्र" },
+  "Self-Declaration Form": { "hi": "स्व-घोषणा पत्र" },
+  "Educational Certificates": { "hi": "शैक्षिक प्रमाण पत्र" },
+  "Passport Size Photographs": { "hi": "पासपोर्ट आकार की तस्वीरें" }
+};
 
 export default function Home() {
   const [currentTab, setCurrentTab] = React.useState('home');
@@ -80,18 +105,18 @@ export default function Home() {
                 {/* Hero Callout */}
                 <div className="lg:col-span-6 space-y-6">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-400 border border-orange-500/30">
-                    <Sparkles className="h-3.5 w-3.5" /> AI-Powered Access Bridge
+                    <Sparkles className="h-3.5 w-3.5" /> {t("hero.badge", language)}
                   </span>
                   
                   <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-                    One Conversation.<br/>
+                    {t("hero.title1", language)}<br/>
                     <span className="bg-gradient-to-r from-orange-400 via-white to-emerald-400 bg-clip-text text-transparent">
-                      Every Government Benefit.
+                      {t("hero.title2", language)}
                     </span>
                   </h1>
 
                   <p className="text-base sm:text-lg text-slate-350 leading-relaxed max-w-lg">
-                    Tell us about your situation in your own language. Vaani-Setu uses AI to discover relevant government schemes, explain your eligibility, and guide you through the next steps.
+                    {t("hero.subtitle", language)}
                   </p>
 
                   <div className="flex flex-wrap gap-3">
@@ -102,14 +127,14 @@ export default function Home() {
                       }}
                       className="rounded-lg bg-orange-600 hover:bg-orange-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition flex items-center gap-2"
                     >
-                      <Mic className="h-4.5 w-4.5" /> Start a Conversation
+                      <Mic className="h-4.5 w-4.5" /> {t("hero.cta.start", language)}
                     </button>
                     
                     <button
                       onClick={() => setCurrentTab('schemes')}
                       className="rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-900/50 px-6 py-3 text-sm font-semibold text-slate-200 transition"
                     >
-                      Explore Schemes
+                      {t("hero.cta.explore", language)}
                     </button>
                   </div>
                 </div>
@@ -119,18 +144,18 @@ export default function Home() {
                   <div className="bg-white/10 backdrop-blur rounded-2xl border border-white/10 p-6 shadow-2xl">
                     <div className="flex items-center gap-2 text-xs font-semibold text-orange-400 uppercase tracking-wider mb-4">
                       <div className="h-2 w-2 rounded-full bg-orange-400 animate-ping" />
-                      Live Conversation Preview
+                      {t("hero.preview.live", language)}
                     </div>
 
                     <div className="space-y-4 text-sm">
                       <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-                        <span className="text-[10px] font-bold text-orange-400 uppercase block mb-1">Citizen (Hindi):</span>
-                        "मेरे दो बच्चे हैं, मैं गांव में रहती हूं और मेरी आय कम है। मुझे कौन-कौन सी सरकारी योजनाओं का लाभ मिल सकता है?"
+                        <span className="text-[10px] font-bold text-orange-400 uppercase block mb-1">{t("hero.preview.citizen", language)}</span>
+                        {t("hero.preview.citizenText", language)}
                       </div>
                       
                       <div className="bg-white/10 rounded-xl p-3 border border-white/10 text-slate-200">
-                        <span className="text-[10px] font-bold text-emerald-400 uppercase block mb-1">Vaani-Setu AI:</span>
-                        "आपकी जानकारी के आधार पर कुछ सरकारी योजनाएँ आपके लिए प्रासंगिक हो सकती हैं। आइए आपकी eligibility को समझते हैं..."
+                        <span className="text-[10px] font-bold text-emerald-400 uppercase block mb-1">{t("hero.preview.assistant", language)}</span>
+                        {t("hero.preview.assistantText", language)}
                       </div>
                     </div>
                   </div>
@@ -145,19 +170,19 @@ export default function Home() {
                 
                 <div className="text-center mb-12">
                   <h2 className="text-3xl font-extrabold text-indigo-950 sm:text-4xl tracking-tight">
-                    The information exists. The access layer is broken.
+                    {t("problem.title", language)}
                   </h2>
                   <p className="mt-4 text-base text-slate-650 max-w-2xl mx-auto">
-                    Indian welfare portals present key challenges for low-income or rural citizens.
+                    {t("problem.subtitle", language)}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
                   {[
-                    { title: "Scattered Information", desc: "Government scheme details are spread across multiple portals and directories." },
-                    { title: "Complex Eligibility", desc: "Rules and eligibility requirements are written in complex regulatory language." },
-                    { title: "Language Barriers", desc: "Most vital documentation lacks localized translations in regional dialects." },
-                    { title: "Dependence on Intermediaries", desc: "Citizens rely on middlemen, leading to high processing fees or information loss." }
+                    { title: t("problem.c1.title", language), desc: t("problem.c1.desc", language) },
+                    { title: t("problem.c2.title", language), desc: t("problem.c2.desc", language) },
+                    { title: t("problem.c3.title", language), desc: t("problem.c3.desc", language) },
+                    { title: t("problem.c4.title", language), desc: t("problem.c4.desc", language) }
                   ].map((prob, i) => (
                     <div key={i} className="p-5 rounded-2xl border border-slate-200 bg-slate-50 flex flex-col justify-between hover:border-orange-200 transition">
                       <h4 className="font-bold text-indigo-950 text-base">{prob.title}</h4>
@@ -168,15 +193,15 @@ export default function Home() {
 
                 {/* Visual Flow diagram */}
                 <div className="p-4 bg-orange-50 rounded-xl border border-orange-100 flex flex-col md:flex-row items-center justify-around gap-2 text-center text-xs font-bold text-orange-900">
-                  <span>Eligible Citizen</span>
+                  <span>{t("problem.flow.c1", language)}</span>
                   <ChevronRight className="h-4 w-4 hidden md:block text-orange-500" />
-                  <span>Doesn't Know</span>
+                  <span>{t("problem.flow.c2", language)}</span>
                   <ChevronRight className="h-4 w-4 hidden md:block text-orange-500" />
-                  <span>Can't Understand</span>
+                  <span>{t("problem.flow.c3", language)}</span>
                   <ChevronRight className="h-4 w-4 hidden md:block text-orange-500" />
-                  <span>Doesn't Apply</span>
+                  <span>{t("problem.flow.c4", language)}</span>
                   <ChevronRight className="h-4 w-4 hidden md:block text-orange-500" />
-                  <span className="text-red-650">Benefit Lost ❌</span>
+                  <span className="text-red-650">{t("problem.flow.c5", language)}</span>
                 </div>
 
               </div>
@@ -187,22 +212,22 @@ export default function Home() {
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 
                 <div className="text-center mb-12">
-                  <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">Our Mission</span>
+                  <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">{t("sol.tag", language)}</span>
                   <h2 className="mt-2 text-3xl font-extrabold text-indigo-950 sm:text-4xl">
-                    Meet Vaani-Setu
+                    {t("sol.title", language)}
                   </h2>
                   <p className="mt-3 text-base text-slate-600">
-                    A conversational AI bridge between citizens and government schemes.
+                    {t("sol.subtitle", language)}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   {[
-                    { num: "01", title: "Speak Naturally", desc: "Describe parameters in your comfortable regional voice dialect." },
-                    { num: "02", title: "Understand Context", desc: "System extracts details like income, age, region, and dependents." },
-                    { num: "03", title: "Match Schemes", desc: "Engine cross-checks rules to identify high-matching welfare programs." },
-                    { num: "04", title: "Explain Rules", desc: "Break down complex criteria into clear, localized check marks." },
-                    { num: "05", title: "Guide Filing", desc: "Assemble custom checklists and direct links to the official portal." }
+                    { num: "01", title: t("sol.s1.title", language), desc: t("sol.s1.desc", language) },
+                    { num: "02", title: t("sol.s2.title", language), desc: t("sol.s2.desc", language) },
+                    { num: "03", title: t("sol.s3.title", language), desc: t("sol.s3.desc", language) },
+                    { num: "04", title: t("sol.s4.title", language), desc: t("sol.s4.desc", language) },
+                    { num: "05", title: t("sol.s5.title", language), desc: t("sol.s5.desc", language) }
                   ].map((sol, idx) => (
                     <div key={idx} className="bg-white p-5 rounded-2xl border border-slate-250/70 shadow-sm flex flex-col justify-between hover:shadow transition">
                       <div>
@@ -223,10 +248,10 @@ export default function Home() {
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-10">
                   <h3 className="text-2xl sm:text-3xl font-extrabold text-indigo-950">
-                    Try the Vaani-Setu AI Assistant
+                    {t("assistant.title", language)}
                   </h3>
                   <p className="text-sm text-slate-500 mt-2">
-                    Simulate a conversational match query below. Click the microphone or sample chips to match.
+                    {t("assistant.subtitle", language)}
                   </p>
                 </div>
 
@@ -254,19 +279,19 @@ export default function Home() {
                 
                 <div className="text-center mb-12">
                   <h2 className="text-3xl font-extrabold text-indigo-950">
-                    How it works step-by-step
+                    {t("journey.title", language)}
                   </h2>
-                  <p className="text-sm text-slate-650 mt-2">Your 6-step journey from query to benefits</p>
+                  <p className="text-sm text-slate-650 mt-2">{t("journey.subtitle", language)}</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
                   {[
-                    { step: "01 ASK", desc: "Speak or query in your preferred language." },
-                    { step: "02 EXTRACT", desc: "AI extracts demographic profile data." },
-                    { step: "03 MATCH", desc: "Engine matches rules automatically." },
-                    { step: "04 EXPLAIN", desc: "Understand criteria in plain voice summary." },
-                    { step: "05 PREPARE", desc: "Gather personalized document checklist." },
-                    { step: "06 ACT", desc: "Follow guidelines to apply on official portals." }
+                    { step: language === 'hi' ? "01 पूछें" : "01 ASK", desc: t("journey.s1", language) },
+                    { step: language === 'hi' ? "02 जानकारी लें" : "02 EXTRACT", desc: t("journey.s2", language) },
+                    { step: language === 'hi' ? "03 मिलान करें" : "03 MATCH", desc: t("journey.s3", language) },
+                    { step: language === 'hi' ? "04 स्पष्टीकरण" : "04 EXPLAIN", desc: t("journey.s4", language) },
+                    { step: language === 'hi' ? "05 तैयार करें" : "05 PREPARE", desc: t("journey.s5", language) },
+                    { step: language === 'hi' ? "06 आवेदन करें" : "06 ACT", desc: t("journey.s6", language) }
                   ].map((item, idx) => (
                     <div key={idx} className="bg-white p-4 rounded-xl border border-slate-200 text-center flex flex-col justify-between">
                       <span className="text-xs font-bold text-orange-600 uppercase block mb-1">{item.step}</span>
@@ -282,18 +307,18 @@ export default function Home() {
             <section className="py-16 bg-white border-t border-slate-200">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
-                  <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">Platform Impact</span>
+                  <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">{t("impact.tag", language)}</span>
                   <h2 className="mt-2 text-3xl font-extrabold text-indigo-950">
-                    Built for the last mile. Designed to scale.
+                    {t("impact.title", language)}
                   </h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
                   {[
-                    { val: "100%", label: "Localization Coverage" },
-                    { val: "2.5x", label: "Discovery Rate Increase" },
-                    { val: "0%", label: "Intermediary Fees Needed" },
-                    { val: "24/7", label: "Voice Support Availability" }
+                    { val: t("impact.i1.val", language), label: t("impact.i1.label", language) },
+                    { val: t("impact.i2.val", language), label: t("impact.i2.label", language) },
+                    { val: t("impact.i3.val", language), label: t("impact.i3.label", language) },
+                    { val: t("impact.i4.val", language), label: t("impact.i4.label", language) }
                   ].map((stat, idx) => (
                     <div key={idx} className="p-6 bg-slate-50 rounded-2xl border border-slate-200">
                       <div className="text-4xl font-extrabold text-orange-600 mb-2">{stat.val}</div>
@@ -309,20 +334,20 @@ export default function Home() {
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="max-w-3xl mx-auto text-center space-y-6">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                    Roadmap & Future Vision
+                    {t("roadmap.tag", language)}
                   </span>
                   <h2 className="text-3xl font-extrabold sm:text-4xl">
-                    From schemes to a complete citizen AI assistant.
+                    {t("roadmap.title", language)}
                   </h2>
                   <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                    Expanding our conversational match framework to include automated document verification, offline support, and direct API integrations.
+                    {t("roadmap.subtitle", language)}
                   </p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 text-left">
                     {[
-                      { ph: "Phase 1", title: "Scheme Match Engine", desc: "Voice-first localized discovery prototype." },
-                      { ph: "Phase 2", title: "Document Assistant", desc: "Optical Character Recognition (OCR) check." },
-                      { ph: "Phase 3", title: "Unified Services API", desc: "Filing directly onto government networks." }
+                      { ph: t("roadmap.p1.tag", language), title: t("roadmap.p1.title", language), desc: t("roadmap.p1.desc", language) },
+                      { ph: t("roadmap.p2.tag", language), title: t("roadmap.p2.title", language), desc: t("roadmap.p2.desc", language) },
+                      { ph: t("roadmap.p3.tag", language), title: t("roadmap.p3.title", language), desc: t("roadmap.p3.desc", language) }
                     ].map((phase, idx) => (
                       <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10">
                         <span className="text-[10px] font-bold text-orange-400 block mb-1">{phase.ph}</span>
@@ -343,10 +368,10 @@ export default function Home() {
           <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-extrabold text-indigo-950 sm:text-4xl">
-                Explore Government Schemes
+                {t("disc.title", language)}
               </h2>
-              <p className="mt-3 text-base text-slate-600">
-                Filter and browse central and state welfare benefits.
+              <p className="mt-3 text-base text-slate-650">
+                {t("disc.subtitle", language)}
               </p>
             </div>
 
@@ -357,6 +382,7 @@ export default function Home() {
                 setSelectedScheme(scheme);
                 setCurrentTab('checker');
               }}
+              language={language}
               onViewDocuments={(scheme) => {
                 setChecklistScheme(scheme);
                 setCurrentTab('documents');
@@ -370,10 +396,10 @@ export default function Home() {
           <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-extrabold text-indigo-950">
-                Calculate Eligibility Match Score
+                {t("checker.title", language)}
               </h2>
-              <p className="mt-3 text-base text-slate-600">
-                Provide brief demographic attributes to calculate potential matches.
+              <p className="mt-3 text-base text-slate-650">
+                {t("checker.subtitle", language)}
               </p>
             </div>
 
@@ -384,12 +410,13 @@ export default function Home() {
                   setEligibilityMatches(matches);
                   triggerConfetti();
                 }}
+                language={language}
               />
             ) : (
               <div className="max-w-2xl mx-auto space-y-6">
                 <div className="bg-emerald-50 rounded-2xl border border-emerald-250 p-6 text-center">
-                  <h3 className="text-lg font-bold text-emerald-900">Your potential benefits calculated!</h3>
-                  <p className="text-xs text-emerald-750 mt-1">Review the estimated match indices matching your parameters.</p>
+                  <h3 className="text-lg font-bold text-emerald-900">{t("checker.resultsTitle", language)}</h3>
+                  <p className="text-xs text-emerald-750 mt-1">{t("checker.resultsSubtitle", language)}</p>
                 </div>
 
                 <div className="space-y-4">
@@ -397,7 +424,9 @@ export default function Home() {
                     <div key={scheme.id} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow transition">
                       <div className="flex justify-between items-start gap-4">
                         <div>
-                          <span className="inline-block text-[10px] font-bold text-orange-600 uppercase tracking-wide mb-1">{scheme.category}</span>
+                          <span className="inline-block text-[10px] font-bold text-orange-600 uppercase tracking-wide mb-1">
+                            {t("cat." + scheme.category, language)}
+                          </span>
                           <h4 className="text-base font-bold text-indigo-950">{scheme.name}</h4>
                           <p className="text-xs text-slate-600 mt-2">{reason}</p>
                         </div>
@@ -409,7 +438,7 @@ export default function Home() {
                                 ? 'bg-amber-100 text-amber-800' 
                                 : 'bg-slate-100 text-slate-700'
                           }`}>
-                            {score}% Match
+                            {score}% {language === 'hi' ? 'मिलान' : 'Match'}
                           </span>
                         </div>
                       </div>
@@ -422,7 +451,7 @@ export default function Home() {
                           }}
                           className="flex-1 rounded-lg bg-indigo-950 py-2 px-3 text-xs font-semibold text-white hover:bg-indigo-900 transition flex items-center justify-center gap-1.5"
                         >
-                          Checklist
+                          {language === 'hi' ? 'दस्तावेज़ चेकलिस्ट' : 'Checklist'}
                         </button>
                         <button
                           onClick={() => {
@@ -431,7 +460,7 @@ export default function Home() {
                           }}
                           className="flex-1 rounded-lg border border-slate-300 py-2 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
                         >
-                          Filing Guide
+                          {language === 'hi' ? 'आवेदन मार्गदर्शिका' : 'Filing Guide'}
                         </button>
                       </div>
                     </div>
@@ -443,7 +472,7 @@ export default function Home() {
                     onClick={() => setEligibilityMatches(null)}
                     className="text-sm font-semibold text-orange-600 hover:underline"
                   >
-                    Reset Eligibility Checker
+                    {t("checker.reset", language)}
                   </button>
                 </div>
               </div>
@@ -460,6 +489,7 @@ export default function Home() {
                 setCurrentTab('schemes');
                 setChecklistScheme(null);
               }}
+              language={language}
             />
           </section>
         )}
@@ -473,6 +503,7 @@ export default function Home() {
                 setCurrentTab('checker');
                 setTimelineScheme(null);
               }}
+              language={language}
             />
           </section>
         )}
@@ -481,26 +512,31 @@ export default function Home() {
         {currentTab === 'schemes-view' && selectedScheme && (
           <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-              <span className="text-xs font-bold text-orange-600 uppercase tracking-wider">{selectedScheme.category}</span>
+              <span className="text-xs font-bold text-orange-600 uppercase tracking-wider">{t("cat." + selectedScheme.category, language)}</span>
               <h2 className="text-2xl font-bold text-indigo-950 mt-1 mb-2">{selectedScheme.name}</h2>
               <p className="text-xs text-slate-400 mb-6">{selectedScheme.department}</p>
               
               <div className="space-y-6">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900 block mb-2">Description</h4>
+                  <h4 className="text-sm font-bold text-slate-900 block mb-2">{language === 'hi' ? 'विवरण' : 'Description'}</h4>
                   <p className="text-sm text-slate-600 leading-relaxed">{selectedScheme.description}</p>
                 </div>
 
                 <div className="border-t border-slate-100 pt-4">
-                  <h4 className="text-sm font-bold text-slate-900 block mb-2">Benefits</h4>
+                  <h4 className="text-sm font-bold text-slate-900 block mb-2">{language === 'hi' ? 'लाभ' : 'Benefits'}</h4>
                   <p className="text-sm text-slate-600">{selectedScheme.benefits}</p>
                 </div>
 
                 <div className="border-t border-slate-100 pt-4">
-                  <h4 className="text-sm font-bold text-slate-900 block mb-2">Required Documents Checklist</h4>
+                  <h4 className="text-sm font-bold text-slate-900 block mb-2">{language === 'hi' ? 'आवश्यक दस्तावेजों की चेकलिस्ट' : 'Required Documents Checklist'}</h4>
                   <ul className="list-disc list-inside text-sm text-slate-600 space-y-1">
                     {selectedScheme.requiredDocuments.map((doc, idx) => (
-                      <li key={idx}>{doc}</li>
+                      <li key={idx}>
+                        {language === 'hi'
+                          ? (docTranslations[doc]?.["hi"] || doc)
+                          : doc
+                        }
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -514,7 +550,7 @@ export default function Home() {
                   }}
                   className="rounded-lg border border-slate-300 py-2.5 px-4 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
                 >
-                  Close Detail
+                  {language === 'hi' ? 'विवरण बंद करें' : 'Close Detail'}
                 </button>
                 <button
                   onClick={() => {
@@ -523,7 +559,7 @@ export default function Home() {
                   }}
                   className="flex-1 rounded-lg bg-orange-600 py-2.5 px-4 text-xs font-semibold text-white shadow-sm hover:bg-orange-700 transition"
                 >
-                  Verify Documents & Setup Checklist
+                  {language === 'hi' ? 'दस्तावेज सत्यापित करें और चेकलिस्ट सेटअप करें' : 'Verify Documents & Setup Checklist'}
                 </button>
               </div>
             </div>
@@ -534,20 +570,45 @@ export default function Home() {
         {currentTab === 'about' && (
           <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-6">
-              <h2 className="text-3xl font-extrabold text-indigo-950">About Vaani-Setu</h2>
+              <h2 className="text-3xl font-extrabold text-indigo-950">
+                {language === 'hi' ? 'वाणी-सेतु के बारे में' : 'About Vaani-Setu'}
+              </h2>
               <p className="text-sm text-slate-650 leading-relaxed">
-                Vaani-Setu was conceived at the <strong>National Hackathon Grand Finale</strong> as a solution to bridge information gaps in public welfare distribution. 
-                By combining web audio interfaces with structured scheme eligibility rules, we enable citizens to discover vital resources using voice input.
+                {language === 'hi' ? (
+                  <>
+                    वाणी-सेतु की परिकल्पना <strong>राष्ट्रीय हैकाथॉन ग्रैंड फिनाले</strong> में सार्वजनिक कल्याण वितरण में सूचना अंतराल को पाटने के लिए एक समाधान के रूप में की गई थी। 
+                    वेब ऑडियो इंटरफेस को संरचित योजना पात्रता नियमों के साथ जोड़कर, हम नागरिकों को वॉयस इनपुट का उपयोग करके महत्वपूर्ण कल्याणकारी संसाधनों की खोज करने में सक्षम बनाते हैं।
+                  </>
+                ) : (
+                  <>
+                    Vaani-Setu was conceived at the <strong>National Hackathon Grand Finale</strong> as a solution to bridge information gaps in public welfare distribution. 
+                    By combining web audio interfaces with structured scheme eligibility rules, we enable citizens to discover vital resources using voice input.
+                  </>
+                )}
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                 <div className="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                  <h4 className="font-bold text-indigo-950 text-sm">Empowering Local Dialogues</h4>
-                  <p className="text-xs text-slate-500 mt-1">Accepts and speaks answers in native regional languages like Hindi and Bengali.</p>
+                  <h4 className="font-bold text-indigo-950 text-sm">
+                    {language === 'hi' ? 'स्थानीय संवादों को सशक्त बनाना' : 'Empowering Local Dialogues'}
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {language === 'hi'
+                      ? 'हिंदी, बंगाली और अन्य क्षेत्रीय भाषाओं में बोलकर प्रश्नों को सुनता और उत्तर देता है।'
+                      : 'Accepts and speaks answers in native regional languages like Hindi and Bengali.'
+                    }
+                  </p>
                 </div>
                 <div className="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                  <h4 className="font-bold text-indigo-950 text-sm">Security & Privacy First</h4>
-                  <p className="text-xs text-slate-500 mt-1">Demographics are processed on the client browser. No persistent tracking is gathered.</p>
+                  <h4 className="font-bold text-indigo-950 text-sm">
+                    {language === 'hi' ? 'सुरक्षा और गोपनीयता पहले' : 'Security & Privacy First'}
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {language === 'hi'
+                      ? 'नागरिकों का जनसांख्यिकीय विवरण स्थानीय ब्राउज़र रनटाइम में संसाधित होता है। कोई स्थायी ट्रैकिंग नहीं की जाती।'
+                      : 'Demographics are processed on the client browser. No persistent tracking is gathered.'
+                    }
+                  </p>
                 </div>
               </div>
             </div>
@@ -558,17 +619,34 @@ export default function Home() {
         {currentTab === 'how-it-works' && (
           <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-6">
-              <h2 className="text-3xl font-extrabold text-indigo-950">How It Works</h2>
+              <h2 className="text-3xl font-extrabold text-indigo-950">
+                {language === 'hi' ? 'यह कैसे काम करता है' : 'How It Works'}
+              </h2>
               <p className="text-sm text-slate-650 leading-relaxed">
-                Vaani-Setu uses a rule matching engine to estimate your eligibility for federal and state benefits. Follow our workflow journey:
+                {language === 'hi'
+                  ? 'वाणी-सेतु आपके लिए संघीय और राज्य कल्याणकारी लाभों की पात्रता का अनुमान लगाने के लिए नियम मिलान इंजन का उपयोग करता है। नीचे हमारी कार्यप्रवाह यात्रा का अनुसरण करें:'
+                  : 'Vaani-Setu uses a rule matching engine to estimate your eligibility for federal and state benefits. Follow our workflow journey:'
+                }
               </p>
               
               <div className="relative border-l-2 border-orange-500 ml-4 pl-6 space-y-6">
                 {[
-                  { title: "1. Speak your query", desc: "Speak directly into the assistant in Hindi, English, Marathi or Bengali." },
-                  { title: "2. Entity profiling", desc: "The platform filters parameters (occupation, state, gender, income, age)." },
-                  { title: "3. Rules computation", desc: "Your data is compared against constraints (such as land ownership, age limits)." },
-                  { title: "4. Checklist assembly", desc: "Verify documents in a custom, downloadable checklist." }
+                  { 
+                    title: language === 'hi' ? "1. अपनी जिज्ञासा बोलें" : "1. Speak your query", 
+                    desc: language === 'hi' ? "सीधे सहायक में हिंदी, अंग्रेजी, मराठी या बंगाली में बोलें।" : "Speak directly into the assistant in Hindi, English, Marathi or Bengali." 
+                  },
+                  { 
+                    title: language === 'hi' ? "2. इकाई रूपरेखा विश्लेषण" : "2. Entity profiling", 
+                    desc: language === 'hi' ? "मंच विवरणों (जैसे व्यवसाय, राज्य, लिंग, आय, आयु) को स्वचालित रूप से फ़िल्टर करता है।" : "The platform filters parameters (occupation, state, gender, income, age)." 
+                  },
+                  { 
+                    title: language === 'hi' ? "3. नियम गणना" : "3. Rules computation", 
+                    desc: language === 'hi' ? "आपके डेटा की तुलना योजना के पात्रता नियमों (जैसे भूमि स्वामित्व, आयु सीमा) से की जाती है।" : "Your data is compared against constraints (such as land ownership, age limits)." 
+                  },
+                  { 
+                    title: language === 'hi' ? "4. चेकलिस्ट असेंबली" : "4. Checklist assembly", 
+                    desc: language === 'hi' ? "एक कस्टम, डाउनलोड करने योग्य चेकलिस्ट में आवश्यक दस्तावेजों को सत्यापित करें।" : "Verify documents in a custom, downloadable checklist." 
+                  }
                 ].map((step, idx) => (
                   <div key={idx} className="relative">
                     <div className="absolute -left-10 h-6 w-6 rounded-full bg-orange-100 border border-orange-300 flex items-center justify-center text-xs font-bold text-orange-600">
@@ -584,7 +662,7 @@ export default function Home() {
         )}
 
         {/* FAQ Tab */}
-        {currentTab === 'faq' && <FAQ />}
+        {currentTab === 'faq' && <FAQ language={language} />}
 
       </main>
 
@@ -595,7 +673,7 @@ export default function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-2xl border border-slate-200 dark:border-slate-700 transition-colors">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
-              <h3 className="text-lg font-bold text-indigo-950 dark:text-white">Citizen Login</h3>
+              <h3 className="text-lg font-bold text-indigo-950 dark:text-white">{t("login.title", language)}</h3>
               <button 
                 onClick={() => setIsLoginOpen(false)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-semibold"
@@ -606,11 +684,11 @@ export default function Home() {
             
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Citizen Full Name</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{t("login.nameLabel", language)}</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Ramesh Kumar"
+                  placeholder={t("login.namePlaceholder", language)}
                   value={usernameInput}
                   onChange={(e) => setUsernameInput(e.target.value)}
                   className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-slate-800 dark:text-white"
@@ -618,7 +696,7 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Mobile / Aadhaar Identifier (Mock)</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{t("login.idLabel", language)}</label>
                 <input
                   type="password"
                   placeholder="••••••••"
@@ -628,15 +706,15 @@ export default function Home() {
                 />
               </div>
 
-              <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg text-[11px] text-indigo-850 dark:text-indigo-300">
-                🔒 Vaani-Setu secure login checks matching criteria details without transferring sensitive info.
+              <div className="p-3 bg-indigo-50 dark:bg-indigo-955/40 rounded-lg text-[11px] text-indigo-850 dark:text-indigo-300">
+                {t("login.note", language)}
               </div>
 
               <button
                 type="submit"
                 className="w-full rounded-lg bg-orange-600 hover:bg-orange-700 text-white py-2.5 text-sm font-semibold shadow-sm transition"
               >
-                Confirm Secure Login
+                {t("login.submit", language)}
               </button>
             </form>
           </div>

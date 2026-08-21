@@ -5,13 +5,45 @@ import { Scheme } from '@/data/schemes';
 interface DocumentChecklistProps {
   scheme: Scheme;
   onBack: () => void;
+  language: string;
 }
+
+const docTranslations: Record<string, Record<string, string>> = {
+  "Aadhaar Card": { "hi": "आधार कार्ड" },
+  "Land Ownership Documents": { "hi": "भूमि स्वामित्व दस्तावेज" },
+  "Bank Account Details": { "hi": "बैंक खाता विवरण" },
+  "Mobile Number linked with Aadhaar": { "hi": "आधार से लिंक मोबाइल नंबर" },
+  "Ration Card": { "hi": "राशन कार्ड" },
+  "Income Certificate": { "hi": "आय प्रमाण पत्र" },
+  "Affidavit of no pucca house": { "hi": "पक्के मकान न होने का हलफनामा" },
+  "Bank Account Passbook": { "hi": "बैंक पासबुक विवरण" },
+  "Mudra Application Form": { "hi": "मुद्रा आवेदन पत्र" },
+  "Business Plan": { "hi": "व्यावसायिक योजना" },
+  "PAN Card": { "hi": "पैन कार्ड" },
+  "Address Proof of Business": { "hi": "व्यवसाय के पते का प्रमाण" },
+  "Electricity Bill": { "hi": "बिजली बिल" },
+  "Rooftop Ownership Proof": { "hi": "छत के स्वामित्व का प्रमाण" },
+  "BPL Ration Card": { "hi": "बीपीएल राशन कार्ड" },
+  "Address Proof": { "hi": "पते का प्रमाण" },
+  "Caste Certificate": { "hi": "जाति प्रमाण पत्र" },
+  "Age Proof": { "hi": "आयु प्रमाण पत्र" },
+  "Disability Certificate": { "hi": "विकलांगता प्रमाण पत्र" },
+  "Self-Declaration Form": { "hi": "स्व-घोषणा पत्र" },
+  "Educational Certificates": { "hi": "शैक्षिक प्रमाण पत्र" },
+  "Passport Size Photographs": { "hi": "पासपोर्ट आकार की तस्वीरें" }
+};
 
 export const DocumentChecklist: React.FC<DocumentChecklistProps> = ({
   scheme,
-  onBack
+  onBack,
+  language
 }) => {
   const [checkedDocs, setCheckedDocs] = React.useState<Record<string, boolean>>({});
+
+  const translateDoc = (doc: string): string => {
+    if (language === 'en') return doc;
+    return docTranslations[doc]?.[language] || doc;
+  };
 
   const toggleDoc = (doc: string) => {
     setCheckedDocs(prev => ({
@@ -31,7 +63,9 @@ export const DocumentChecklist: React.FC<DocumentChecklistProps> = ({
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>
-          <span className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wide">Document Assistant</span>
+          <span className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wide">
+            {language === 'hi' ? 'दस्तावेज़ सहायक' : 'Document Assistant'}
+          </span>
           <h3 className="text-xl font-bold text-indigo-950 dark:text-white mt-1">{scheme.name}</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{scheme.department}</p>
         </div>
@@ -40,8 +74,15 @@ export const DocumentChecklist: React.FC<DocumentChecklistProps> = ({
       {/* Progress Card */}
       <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-850 rounded-xl p-4 mb-6">
         <div className="flex justify-between items-center mb-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
-          <span>{readyCount} of {totalCount} Documents Ready</span>
-          <span className={`${percentReady === 100 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>{percentReady}% Ready</span>
+          <span>
+            {language === 'hi' 
+              ? `${readyCount} / ${totalCount} दस्तावेज़ तैयार` 
+              : `${readyCount} of ${totalCount} Documents Ready`
+            }
+          </span>
+          <span className={`${percentReady === 100 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>
+            {percentReady}% {language === 'hi' ? 'तैयार' : 'Ready'}
+          </span>
         </div>
         <div className="h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
           <div 
@@ -72,7 +113,7 @@ export const DocumentChecklist: React.FC<DocumentChecklistProps> = ({
                   <Square className="h-5 w-5 text-slate-400 dark:text-slate-500" />
                 )}
               </div>
-              <span className="text-sm font-medium">{doc}</span>
+              <span className="text-sm font-medium">{translateDoc(doc)}</span>
             </button>
           );
         })}
@@ -81,7 +122,12 @@ export const DocumentChecklist: React.FC<DocumentChecklistProps> = ({
       {/* Security alert */}
       <div className="p-3 bg-amber-50 dark:bg-amber-955/20 rounded-lg border border-amber-200 dark:border-amber-900/40 flex gap-2 text-xs text-amber-900 dark:text-amber-300 mb-6">
         <AlertCircle className="h-4.5 w-4.5 text-amber-600 dark:text-amber-450 flex-shrink-0 mt-0.5" />
-        <p>Ensure documents details match your Aadhaar credentials before applying to avoid validation errors.</p>
+        <p>
+          {language === 'hi'
+            ? 'अस्वीकृति से बचने के लिए आवेदन करने से पहले सुनिश्चित करें कि दस्तावेजों का विवरण आपके आधार विवरण से मेल खाता हो।'
+            : 'Ensure documents details match your Aadhaar credentials before applying to avoid validation errors.'
+          }
+        </p>
       </div>
 
       {/* Footer controls */}
@@ -90,19 +136,19 @@ export const DocumentChecklist: React.FC<DocumentChecklistProps> = ({
           onClick={onBack}
           className="rounded-lg border border-slate-300 dark:border-slate-650 py-2.5 px-4 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750 transition"
         >
-          Back to List
+          {language === 'hi' ? 'पीछे जाएं' : 'Back to List'}
         </button>
         
         <button
-          onClick={() => alert("Checklist Saved Successfully in Browser Storage!")}
+          onClick={() => alert(language === 'hi' ? "चेकलिस्ट ब्राउज़र स्टोरेज में सफलतापूर्वक सहेजी गई!" : "Checklist Saved Successfully in Browser Storage!")}
           className="flex-1 rounded-lg bg-indigo-950 dark:bg-indigo-900 py-2.5 px-4 text-xs font-semibold text-white shadow-sm hover:bg-indigo-900/90 transition flex items-center justify-center gap-1.5"
         >
-          <Bookmark className="h-4 w-4" /> Save Checklist
+          <Bookmark className="h-4 w-4" /> {language === 'hi' ? 'चेकलिस्ट सहेजें' : 'Save Checklist'}
         </button>
 
         <button
           onClick={() => {
-            const docContent = `Vaani-Setu Document Checklist\nScheme: ${scheme.name}\n\nRequired Documents:\n` + scheme.requiredDocuments.map((d, i) => `- [${checkedDocs[d] ? 'x' : ' '}] ${d}`).join('\n');
+            const docContent = `Vaani-Setu Document Checklist\nScheme: ${scheme.name}\n\nRequired Documents:\n` + scheme.requiredDocuments.map((d, i) => `- [${checkedDocs[d] ? 'x' : ' '}] ${translateDoc(d)}`).join('\n');
             const blob = new Blob([docContent], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -111,7 +157,7 @@ export const DocumentChecklist: React.FC<DocumentChecklistProps> = ({
             a.click();
             URL.revokeObjectURL(url);
           }}
-          className="rounded-lg border border-slate-200 dark:border-slate-700 py-2.5 px-3.5 text-xs font-semibold text-slate-605 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-750 transition flex items-center justify-center"
+          className="rounded-lg border border-slate-200 dark:border-slate-700 py-2.5 px-3.5 text-xs font-semibold text-slate-605 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-755 transition flex items-center justify-center"
           title="Download Checklist"
         >
           <Download className="h-4 w-4" />

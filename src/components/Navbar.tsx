@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Menu, X, Landmark, Globe, Sun, Moon, LogIn, LogOut, User } from 'lucide-react';
+import { t } from '../data/translations';
 
 interface NavbarProps {
   currentTab: string;
@@ -24,6 +25,14 @@ export const languages = [
   { code: 'pa', label: 'ਪੰਜਾਬੀ (Punjabi)' }
 ];
 
+const translationKeys: Record<string, string> = {
+  'home': 'nav.home',
+  'how-it-works': 'nav.howItWorks',
+  'schemes': 'nav.schemes',
+  'about': 'nav.about',
+  'faq': 'nav.faq'
+};
+
 export const Navbar: React.FC<NavbarProps> = ({
   currentTab,
   setCurrentTab,
@@ -36,11 +45,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isOpen, setIsOpen] = React.useState(false);
 
   const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'how-it-works', label: 'How It Works' },
-    { id: 'schemes', label: 'Government Schemes' },
-    { id: 'about', label: 'About' },
-    { id: 'faq', label: 'FAQ' }
+    { id: 'home' },
+    { id: 'how-it-works' },
+    { id: 'schemes' },
+    { id: 'about' },
+    { id: 'faq' }
   ];
 
   return (
@@ -74,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   : 'text-slate-600 dark:text-slate-350'
               }`}
             >
-              {item.label}
+              {t(translationKeys[item.id], language)}
             </button>
           ))}
         </nav>
@@ -109,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={onLogout}
                 className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-red-500 hover:bg-red-55 dark:hover:bg-red-950/20 transition"
-                title="Logout"
+                title={t("nav.logout", language)}
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -119,7 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={onOpenLogin}
               className="flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
             >
-              <LogIn className="h-4 w-4" /> Login
+              <LogIn className="h-4 w-4" /> {t("nav.login", language)}
             </button>
           )}
 
@@ -133,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }}
             className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-700 transition"
           >
-            Try Vaani-Setu
+            {t("nav.try", language)}
           </button>
         </div>
 
@@ -177,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   currentTab === item.id ? 'text-orange-600 font-semibold border-l-2 border-orange-600 pl-2' : 'text-slate-600 pl-2'
                 }`}
               >
-                {item.label}
+                {t(translationKeys[item.id], language)}
               </button>
             ))}
             <button
@@ -191,7 +200,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="w-full rounded-lg bg-orange-600 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-orange-700 transition"
             >
-              Try Vaani-Setu
+              {t("nav.try", language)}
             </button>
           </div>
         </div>
