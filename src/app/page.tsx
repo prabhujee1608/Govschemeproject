@@ -217,6 +217,61 @@ export default function Home() {
               </div>
             </section>
 
+            {/* Key Features Section from slide presentation */}
+            <section className="py-16 bg-white border-t border-slate-200">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-12">
+                  <span className="text-xs font-bold text-orange-650 uppercase tracking-widest">Everything a citizen needs, in one flow</span>
+                  <h2 className="mt-2 text-3xl font-extrabold text-indigo-950 sm:text-4xl">
+                    Key Features
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {[
+                    {
+                      icon: "🎙️",
+                      title: "Voice Assistant",
+                      desc: "Floating mic with live waveform animation; real STT/TTS across supported browsers for natural, hands-free conversation."
+                    },
+                    {
+                      icon: "🌐",
+                      title: "Multilingual Interface",
+                      desc: "Language selector in navbar lets citizens read and speak in the language they are most comfortable with."
+                    },
+                    {
+                      icon: "🔍",
+                      title: "Smart Scheme Discovery",
+                      desc: "Search & filter across PM-KISAN, Ayushman Bharat, PM Awas Yojana, PM Svanidhi and more, by category & ministry."
+                    },
+                    {
+                      icon: "⚙️",
+                      title: "Eligibility Checker",
+                      desc: "Step-by-step profile form runs a custom scoring engine against detailed scheme criteria for a personalized match list."
+                    },
+                    {
+                      icon: "📋",
+                      title: "Document Checklist",
+                      desc: "Dynamic, per-scheme checklist with a live readiness progress bar so users know exactly what to prepare."
+                    },
+                    {
+                      icon: "⏳",
+                      title: "Application Timeline",
+                      desc: "Clear step by step guidance from discovery to final submission, removing bureaucratic guesswork."
+                    }
+                  ].map((feat, i) => (
+                    <div key={i} className="p-6 rounded-2xl border border-slate-200 bg-slate-50/50 hover:border-orange-300 hover:shadow-md transition duration-300 flex flex-col gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-orange-100 flex items-center justify-center text-xl">
+                        {feat.icon}
+                      </div>
+                      <h4 className="font-bold text-indigo-950 text-lg">{feat.title}</h4>
+                      <p className="text-xs text-slate-650 leading-relaxed">{feat.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
             {/* Assistant Demo Section */}
             <section className="py-16 bg-white border-t border-slate-200">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
