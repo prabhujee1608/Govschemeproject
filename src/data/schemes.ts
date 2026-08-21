@@ -212,5 +212,90 @@ export const schemesData: Scheme[] = [
     requiredDocuments: ["Aadhaar Card", "Bank Account Details", "Nominee details"],
     officialUrl: "https://www.jansuraksha.gov.in/",
     criteria: { minAge: 18, maxAge: 70 }
+  },
+  {
+    id: "pm-usp-csss",
+    name: "Central Sector Scheme of Scholarship for College and University Students (PM-USP CSSS)",
+    department: "Department of Higher Education, Ministry of Education",
+    category: "Education & Scholarship",
+    description: "Financial assistance to meritorious students from economically weaker sections to meet their day-to-day expenses while pursuing higher studies.",
+    eligibilitySummary: "Class 12 passed students above the 80th percentile, enrolled in regular UG/PG courses with annual family income up to ₹4.5 Lakh.",
+    benefits: "₹12,000 per year for the first three years of undergraduate level, and ₹20,000 per year for postgraduate level.",
+    requiredDocuments: ["Class 12 Marksheet", "Income Certificate", "Aadhaar Card", "Bank Account Details", "College Admission Proof"],
+    officialUrl: "https://scholarships.gov.in/",
+    criteria: {
+      minAge: 18,
+      maxAge: 25,
+      occupations: ["Student"],
+      maxIncome: 450000,
+      ruralUrban: "Both"
+    }
+  },
+  {
+    id: "nmmss",
+    name: "National Means-cum-Merit Scholarship Scheme (NMMSS)",
+    department: "Department of School Education & Literacy, Ministry of Education",
+    category: "Education & Scholarship",
+    description: "Scholarship to award meritorious students of economically weaker sections to arrest their drop-out at class VIII and encourage them to continue study at secondary stage.",
+    eligibilitySummary: "Regular government/aided/local body school students of Class 9 to 12 with family income up to ₹3.5 Lakh, who passed Class 8 with min 55% marks and cleared the selection exam.",
+    benefits: "₹12,000 per annum (₹1,000 per month) from Class 9 to Class 12.",
+    requiredDocuments: ["Class 7 & 8 Marksheets", "Parental Income Certificate", "Aadhaar Card", "Bank Passbook", "School Certificate"],
+    officialUrl: "https://scholarships.gov.in/",
+    criteria: {
+      minAge: 12,
+      maxAge: 18,
+      occupations: ["Student"],
+      maxIncome: 350000,
+      ruralUrban: "Both"
+    }
+  },
+  {
+    id: "pragati-scholarship",
+    name: "AICTE Pragati Scholarship Scheme for Girl Students",
+    department: "All India Council for Technical Education (AICTE), Ministry of Education",
+    category: "Education & Scholarship",
+    description: "An initiative to support and encourage girl students to pursue technical education (degree and diploma courses) in AICTE-approved institutions.",
+    eligibilitySummary: "Girl students admitted to 1st year degree/diploma or 2nd year lateral entry in AICTE-approved institutions, with family income up to ₹8 Lakh (max 2 girl children per family).",
+    benefits: "₹50,000 per annum for tuition fees, computer purchase, stationery, books, etc.",
+    requiredDocuments: ["AICTE Admission Letter", "Family Income Certificate", "Aadhaar Card", "Bank Passbook", "Declaration of single/two girl child status"],
+    officialUrl: "https://scholarships.gov.in/",
+    criteria: {
+      genders: ["Female"],
+      occupations: ["Student"],
+      maxIncome: 800000,
+      ruralUrban: "Both"
+    }
+  },
+  {
+    id: "hdfc-parivartan-ecss",
+    name: "HDFC Bank Parivartan's ECSS Scholarship",
+    department: "HDFC Bank (CSR initiative via Buddy4Study)",
+    category: "Education & Scholarship",
+    description: "Supports meritorious students facing financial or personal crises to continue their education from Class 1 up to postgraduate level.",
+    eligibilitySummary: "Indian nationals studying in Class 1 to 12, ITI, Diploma, UG, or PG courses, with minimum 55% marks in previous class and family income up to ₹2.5 Lakh, facing personal crisis.",
+    benefits: "Financial assistance up to ₹75,000 depending on the level of study.",
+    requiredDocuments: ["Previous Class Marksheet", "Income Proof / Crisis Proof", "Aadhaar Card", "Bank Passbook", "Current Year Admission Proof"],
+    officialUrl: "https://www.buddy4study.com/page/hdfc-bank-parivartans-ecss-scholarship",
+    criteria: {
+      occupations: ["Student"],
+      maxIncome: 250000,
+      ruralUrban: "Both"
+    }
+  },
+  {
+    id: "lic-hfl-vidyadhan",
+    name: "LIC HFL Vidyadhan Scholarship",
+    department: "LIC Housing Finance Limited (CSR initiative via Buddy4Study)",
+    category: "Education & Scholarship",
+    description: "Financial assistance to students from lower-income families who are pursuing higher secondary, graduation, or post-graduation.",
+    eligibilitySummary: "Meritorious students in Class 11, 12, UG, or PG programs, with at least 60% marks in the qualifying board exam and family income up to ₹3.6 Lakh.",
+    benefits: "Up to ₹25,000 per year based on the course level.",
+    requiredDocuments: ["Marksheet of Class 10/12/UG", "Income Certificate", "Aadhaar Card / Voter ID", "Current College Fee Receipt", "Bank Passbook"],
+    officialUrl: "https://www.buddy4study.com/",
+    criteria: {
+      occupations: ["Student"],
+      maxIncome: 360000,
+      ruralUrban: "Both"
+    }
   }
 ];

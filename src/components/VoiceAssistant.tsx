@@ -412,6 +412,12 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           {/* Quick chip queries */}
           <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-none">
             <button
+              onClick={() => handleSendMessage(language === 'hi' ? "मुझे छात्रों के लिए छात्रवृत्ति और शिक्षा योजनाओं के बारे में बताएं" : "Tell me about student scholarships and education schemes")}
+              className="text-[11px] font-semibold text-slate-650 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-650 px-2.5 py-1 rounded-full whitespace-nowrap transition"
+            >
+              {t("assist.sample.scholarship", language)}
+            </button>
+            <button
               onClick={() => handleSendMessage(language === 'hi' ? "मैं एक गरीब किसान हूँ, मुझे खेती के लिए सहायता चाहिए" : "I am a poor farmer, I need agricultural support")}
               className="text-[11px] font-semibold text-slate-650 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-650 px-2.5 py-1 rounded-full whitespace-nowrap transition"
             >
