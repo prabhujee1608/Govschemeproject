@@ -1143,6 +1143,33 @@ export const translations: Record<string, Record<string, string>> = {
 
   "cat.Education & Scholarship": { "en": "Education & Scholarship", "hi": "शिक्षा और छात्रवृत्ति", "bn": "শিক্ষা ও বৃত্তি", "mr": "शिक्षण आणि शिष्यवृत्ती", "ta": "கல்வி & உதவித்தொகை", "kn": "ಶಿಕ್ಷಣ ಮತ್ತು ವಿದ್ಯಾರ್ಥಿವೇತನ", "te": "విద్య & స్కాలర్‌షిప్", "gu": "શિક્ષણ અને શિષ્યવૃત્તિ", "pa": "ਸਿੱਖਿਆ ਅਤੇ ਵਜ਼ੀਫ਼ਾ" },
 
+  "edu.title": { "en": "Featured Education & Scholarship Schemes", "hi": "प्रायोजित शिक्षा और छात्रवृत्ति योजनाएं" },
+  "edu.subtitle": { "en": "Explore prestigious scholarships sponsored by the National Government and leading corporate CSR initiatives to fund your academic journey.", "hi": "अपनी शैक्षणिक यात्रा को वित्तपोषित करने के लिए राष्ट्रीय सरकार और प्रमुख कॉर्पोरेट CSR पहलों द्वारा प्रायोजित प्रतिष्ठित छात्रवृत्तियों का अन्वेषण करें।" },
+  "edu.gov": { "en": "Government Sponsored", "hi": "सरकारी प्रायोजित" },
+  "edu.csr": { "en": "CSR Initiative (Buddy4Study)", "hi": "सीएसआर पहल (बडी4स्टडी)" },
+  "assist.sample.scholarship": { 
+    "en": "🎓 Student Scholarships & Education", 
+    "hi": "🎓 छात्रवृत्ति और शिक्षा योजनाएं", 
+    "bn": "🎓 বৃত্তি এবং শিক্ষা প্রকল্প", 
+    "mr": "🎓 शिष्यवृत्ती आणि शिक्षण योजना", 
+    "ta": "🎓 கல்வி மற்றும் உதவித்தொகை", 
+    "kn": "🎓 ವಿದ್ಯಾರ್ಥಿವೇತನ ಮತ್ತು ಶಿಕ್ಷಣ", 
+    "te": "🎓 స్కాలర్‌షిప్ & విద్య", 
+    "gu": "🎓 શિષ્યવૃત્તિ અને શિક્ષણ", 
+    "pa": "🎓 ਵਜ਼ੀਫ਼ਾ ਅਤੇ ਸਿੱਖਿਆ ਯੋਜਨਾਵਾਂ" 
+  },
+  "reply.scholarship": {
+    "en": "For student support and education, there are excellent scholarships from the National Government (like PM-USP CSSS, AICTE Pragati, NMMSS) and private CSR programs via Buddy4Study (HDFC Parivartan, LIC HFL). Explore details below:",
+    "hi": "छात्रों की सहायता और शिक्षा के लिए, राष्ट्रीय सरकार (जैसे PM-USP CSSS, AICTE प्रगति, NMMSS) और Buddy4Study के माध्यम से निजी CSR कार्यक्रमों (HDFC परिवर्तन, LIC HFL) से उत्कृष्ट छात्रवृत्तियां उपलब्ध हैं। नीचे विवरण देखें:",
+    "bn": "শিক্ষার্থী সহায়তা এবং শিক্ষার জন্য, জাতীয় সরকার (যেমন PM-USP CSSS, AICTE প্রগতি, NMMSS) এবং Buddy4Study-এর মাধ্যমে বেসরকারি CSR কর্মসূচির (HDFC পরিবর্তন, LIC HFL) অধীনে চমৎকার বৃত্তি রয়েছে। নিচে বিশদ বিবরণ দেখুন:",
+    "mr": "विद्यार्थी आणि शिक्षणासाठी, राष्ट्रीय सरकार (उदा. PM-USP CSSS, AICTE प्रगती, NMMSS) आणि खाजगी CSR कार्यक्रमांद्वारे (HDFC परिवर्तन, LIC HFL) उत्कृष्ट शिष्यवृत्ती उपलब्ध आहेत. खालील ठेवा:",
+    "ta": "மாணவர் உதவி மற்றும் கல்விக்காக, தேசிய அரசு (PM-USP CSSS, AICTE பிரகதி, NMMSS) மற்றும் Buddy4Study மூலமாக தனியார் CSR திட்டங்கள் (HDFC பரிவர்தன், LIC HFL) மூலம் சிறந்த உதவித்தொகைகள் உள்ளன. கீழே விவரங்களைக் காண்க:",
+    "kn": "ವಿದ್ಯಾರ್ಥಿ ನೆರವು ಮತ್ತು ಶಿಕ್ಷಣಕ್ಕಾಗಿ, ರಾಷ್ಟ್ರೀಯ ಸರ್ಕಾರದಿಂದ (PM-USP CSSS, AICTE ಪ್ರಗತಿ, NMMSS) ಮತ್ತು ಖಾಸಗಿ CSR ಕಾರ್ಯಕ್ರಮಗಳಿಂದ (HDFC ಪರಿವರ್ತನ್, LIC HFL) ಅತ್ಯುತ್ತಮ ವಿದ್ಯಾರ್ಥಿವೇತನಗಳು ಲಭ್ಯವಿದೆ. ಕೆಳಗೆ ನೋಡಿ:",
+    "te": "విద్యార్థుల సహాయం మరియు విద్య కోసం, జాతీయ ప్రభుత్వం (PM-USP CSSS, AICTE ప్రగతి, NMMSS) మరియు ప్రైవేట్ CSR ప్రోగ్రామ్‌ల (HDFC పరివర్తన్, LIC HFL) ద్వారా అద్భుతమైన స్కాలర్‌షిప్‌లు అందుబాటులో ఉన్నాయి. కింద చూడండి:",
+    "gu": "વિદ્યાર્થીઓ અને શિક્ષણ માટે, રાષ્ટ્રીય સરકાર (જેમ કે PM-USP CSSS, AICTE પ્રગતિ, NMMSS) และ ખાનગી CSR કાર્યક્રમો (HDFC પરિવર્તન, LIC HFL) દ્વારા ઉત્કૃષ્ટ શિષ્યવૃત્તિઓ ઉપલબ્ધ છે. નીચે વિગતો જુઓ:",
+    "pa": "ਵਿਦਿਆਰਥੀਆਂ ਦੀ ਸਹਾਇਤਾ ਅਤੇ ਸਿੱਖਿਆ ਲਈ, ਰਾਸ਼ਟรีย ਸਰਕਾਰ (ਜਿਵੇਂ PM-USP CSSS, AICTE ਪ੍ਰਗਤੀ, NMMSS) ਅਤੇ Buddy4Study ਰਾਹੀਂ ਨਿੱਜੀ CSR ਪ੍ਰੋਗਰਾਮਾਂ (HDFC ਪਰਿਵਰਤਨ, LIC HFL) ਤੋਂ ਸ਼ਾਨਦਾਰ ਵਜ਼ੀਫ਼ੇ ਉਪਲਬਧ ਹਨ। ਹੇਠਾਂ ਵੇਰਵੇ ਦੇਖੋ:"
+  },
+
   // Eligibility Checker
   "checker.title": {
     "en": "Calculate Eligibility Match Score",

@@ -243,6 +243,83 @@ export default function Home() {
             </section>
 
 
+
+            {/* Education & Scholarship Section */}
+            <section className="py-16 bg-slate-50 border-t border-slate-200">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-12">
+                  <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">{t("cat.Education & Scholarship", language)}</span>
+                  <h2 className="mt-2 text-3xl font-extrabold text-indigo-950 sm:text-4xl">
+                    {t("edu.title", language)}
+                  </h2>
+                  <p className="mt-3 text-base text-slate-650 max-w-2xl mx-auto">
+                    {t("edu.subtitle", language)}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {schemesData
+                    .filter((scheme) => scheme.category === "Education & Scholarship")
+                    .map((scheme) => {
+                      const isGov = scheme.officialUrl.includes(".gov.in");
+                      return (
+                        <div 
+                          key={scheme.id} 
+                          className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between hover:shadow-md hover:border-orange-200 transition"
+                        >
+                          <div>
+                            <div className="flex justify-between items-start mb-3">
+                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                isGov 
+                                  ? 'bg-orange-50 text-orange-700 border border-orange-100' 
+                                  : 'bg-indigo-50 text-indigo-700 border border-indigo-100'
+                              }`}>
+                                {isGov ? t("edu.gov", language) : t("edu.csr", language)}
+                              </span>
+                            </div>
+                            <h4 className="text-base font-bold text-indigo-950 mb-1">{scheme.name}</h4>
+                            <p className="text-[11px] text-slate-400 mb-3">{scheme.department}</p>
+                            <p className="text-xs text-slate-600 mb-4 line-clamp-3 leading-relaxed">{scheme.description}</p>
+                            
+                            <div className="space-y-2 mb-6">
+                              <div className="text-xs">
+                                <strong className="text-slate-800 font-semibold">{language === 'hi' ? "पात्रता: " : "Eligibility: "}</strong>
+                                <span className="text-slate-600">{scheme.eligibilitySummary}</span>
+                              </div>
+                              <div className="text-xs">
+                                <strong className="text-slate-800 font-semibold">{language === 'hi' ? "लाभ: " : "Benefits: "}</strong>
+                                <span className="text-slate-600">{scheme.benefits}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2 pt-4 border-t border-slate-100">
+                            <button
+                              onClick={() => {
+                                setSelectedScheme(scheme);
+                                setCurrentTab('checker');
+                              }}
+                              className="flex-1 rounded-lg bg-indigo-950 py-2 text-center text-xs font-semibold text-white hover:bg-indigo-900 transition"
+                            >
+                              {language === 'hi' ? "पात्रता जांचें" : "Check Eligibility"}
+                            </button>
+                            <button
+                              onClick={() => {
+                                setChecklistScheme(scheme);
+                                setCurrentTab('documents');
+                              }}
+                              className="flex-1 rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                            >
+                              {language === 'hi' ? "दस्तावेज़" : "Documents"}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            </section>
+
             {/* Assistant Demo Section */}
             <section className="py-16 bg-white border-t border-slate-200">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
