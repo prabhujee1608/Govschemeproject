@@ -1141,6 +1141,8 @@ export const translations: Record<string, Record<string, string>> = {
   "cat.Women & Child": { "en": "Women & Child", "hi": "महिला एवं बाल विकास", "bn": "নারী ও শিশু", "mr": "महिला आणि बाल", "ta": "பெண்கள் & குழந்தைகள்", "kn": "ಮಹಿಳಾ ಮತ್ತು ಮಕ್ಕಳ", "te": "మహిళా & శిశు", "gu": "મહિલા અને બાળ", "pa": "ਮਹਿਲਾ ਅਤੇ ਬਾਲ ਵਿਕਾਸ" },
   "cat.Social Security": { "en": "Social Security", "hi": "सामाजिक सुरक्षा", "bn": "সামাজিক নিরাপত্তা", "mr": "सामाजिक सुरक्षा", "ta": "சமூக பாதுகாப்பு", "kn": "ಸಾಮಾಜಿಕ ಭದ್ರತೆ", "te": "ಸಾಮಾಜಿಕ భద్రత", "gu": "સામાજિક સુરક્ષા", "pa": "ਸਾਮਾਜਿਕ ਸੁਰੱਖਿਆ" },
 
+  "cat.Education & Scholarship": { "en": "Education & Scholarship", "hi": "शिक्षा और छात्रवृत्ति", "bn": "শিক্ষা ও বৃত্তি", "mr": "शिक्षण आणि शिष्यवृत्ती", "ta": "கல்வி & உதவித்தொகை", "kn": "ಶಿಕ್ಷಣ ಮತ್ತು ವಿದ್ಯಾರ್ಥಿವೇತನ", "te": "విద్య & స్కాలర్‌షిప్", "gu": "શિક્ષણ અને શિષ્યવૃત્તિ", "pa": "ਸਿੱਖਿਆ ਅਤੇ ਵਜ਼ੀਫ਼ਾ" },
+
   // Eligibility Checker
   "checker.title": {
     "en": "Calculate Eligibility Match Score",

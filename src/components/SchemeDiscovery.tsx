@@ -21,7 +21,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   const [selectedRuralUrban, setSelectedRuralUrban] = React.useState('All');
   const [selectedGender, setSelectedGender] = React.useState('All');
 
-  const categories = ['All', 'Agriculture', 'Healthcare', 'Housing', 'Financial Assistance', 'Women & Child', 'Social Security'];
+  const categories = ['All', 'Agriculture', 'Healthcare', 'Housing', 'Financial Assistance', 'Women & Child', 'Social Security', 'Education & Scholarship'];
 
   const filteredSchemes = schemes.filter((s) => {
     const matchesSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
