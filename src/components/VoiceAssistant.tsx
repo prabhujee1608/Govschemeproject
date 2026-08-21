@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mic, MicOff, Globe, Sparkles, Send, Bot, User, CheckCircle2, ChevronRight, CornerDownRight } from 'lucide-react';
+import { Mic, MicOff, Globe, Sparkles, Send, Bot, User, CheckCircle2, ChevronRight, CornerDownRight, Briefcase, IndianRupee, MapPin, Calendar, Users } from 'lucide-react';
 import { Scheme } from '@/data/schemes';
 import { t } from '../data/translations';
 
@@ -16,6 +16,14 @@ interface Message {
   matchedSchemes?: Scheme[];
 }
 
+export interface ProfileState {
+  occupation?: string;
+  income?: number;
+  age?: number;
+  location?: string;
+  familySize?: number;
+}
+
 export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   schemes,
   onSelectScheme,
@@ -27,82 +35,206 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   const [inputText, setInputText] = React.useState('');
   const [isProcessing, setIsProcessing] = React.useState(false);
 
+  // Stateful profile for conversational tracking
+  const [profile, setProfile] = React.useState<ProfileState>({});
+  const [lastAsked, setLastAsked] = React.useState<keyof ProfileState | null>(null);
+
   // Initialize and update greeting message when language changes
   React.useEffect(() => {
     setMessages([
       {
         sender: 'bot',
-        text: t("assist.welcome", language)
+        text: language === 'hi' 
+          ? "नमस्ते! मैं वाणी-सेतु एआई हूँ। कृपया मुझे अपनी स्थिति के बारे में बताएं (जैसे: 'मेरे पापा किसान हैं और उनकी आय 1.5 लाख है') ताकि मैं आपके लिए उपयुक्त योजनाएं खोज सकूं।"
+          : "Hello! I am Vaani-Setu AI. Tell me about your situation (e.g. 'My father is a farmer and his income is 1.5 lakh') so I can discover suitable schemes for you."
       }
     ]);
   }, [language]);
 
-  // Fallback simulation text triggers
-  const getSimulatedResponse = (text: string): { reply: string; matches: Scheme[] } => {
-    const inputClean = text.toLowerCase();
+  // Extract entities from user text
+  const parseEntities = (text: string, currentAsked: keyof ProfileState | null): ProfileState => {
+    const cleanText = text.toLowerCase();
+    const newProfile: ProfileState = {};
+
+    // 1. Occupation
+    if (cleanText.includes('farmer') || cleanText.includes('किसान') || cleanText.includes('खेती') || cleanText.includes('kisan')) {
+      newProfile.occupation = 'Farmer';
+    } else if (cleanText.includes('vendor') || cleanText.includes('विक्रेता') || cleanText.includes('rehri') || cleanText.includes('thela')) {
+      newProfile.occupation = 'Street Vendor';
+    } else if (cleanText.includes('student') || cleanText.includes('छात्र') || cleanText.includes('padhai')) {
+      newProfile.occupation = 'Student';
+    } else if (cleanText.includes('shopkeeper') || cleanText.includes('दुकानदार') || cleanText.includes('dokan')) {
+      newProfile.occupation = 'Shopkeeper';
+    } else if (cleanText.includes('worker') || cleanText.includes('मजदूर') || cleanText.includes('labour') || cleanText.includes('majdoor')) {
+      newProfile.occupation = 'Unorganized Worker';
+    }
+
+    // 2. Income parsing
+    // Match lakhs
+    const lakhMatch = cleanText.match(/(\d+(\.\d+)?)\s*(lakh|lakhs|लाख|l)/);
+    if (lakhMatch) {
+      newProfile.income = parseFloat(lakhMatch[1]) * 100000;
+    } else {
+      // Match thousands
+      const thousandMatch = cleanText.match(/(\d+(\.\d+)?)\s*(thousand|हजार|k)/);
+      if (thousandMatch) {
+        newProfile.income = parseFloat(thousandMatch[1]) * 1000;
+      } else {
+        // Direct number match if last asked was income
+        const directNum = cleanText.match(/\b\d{4,7}\b/);
+        if (directNum) {
+          newProfile.income = parseInt(directNum[0], 10);
+        } else if (currentAsked === 'income') {
+          const simpleNum = cleanText.match(/\b\d+\b/);
+          if (simpleNum) {
+            const val = parseFloat(simpleNum[0]);
+            newProfile.income = val < 20 ? val * 100000 : val; // assume lakh if < 20
+          }
+        }
+      }
+    }
+
+    // 3. Age parsing
+    const ageMatch = cleanText.match(/(\d+)\s*(years|year|साल|वर्ष|age|उम्र)/);
+    if (ageMatch) {
+      newProfile.age = parseInt(ageMatch[1], 10);
+    } else if (currentAsked === 'age') {
+      const simpleNum = cleanText.match(/\b\d+\b/);
+      if (simpleNum) {
+        newProfile.age = parseInt(simpleNum[0], 10);
+      }
+    }
+
+    // 4. Location parsing
+    if (cleanText.includes('village') || cleanText.includes('rural') || cleanText.includes('गांव') || cleanText.includes('ग्रामीण') || cleanText.includes('gramin')) {
+      newProfile.location = 'Rural';
+    } else if (cleanText.includes('urban') || cleanText.includes('city') || cleanText.includes('town') || cleanText.includes('शहर') || cleanText.includes('शहरी') || cleanText.includes('shahar')) {
+      newProfile.location = 'Urban';
+    }
+
+    // 5. Family size parsing
+    const familyMatch = cleanText.match(/(\d+)\s*(members|member|people|kids|children|परिवार|बच्चे|सदस्य)/);
+    if (familyMatch) {
+      newProfile.familySize = parseInt(familyMatch[1], 10);
+    } else if (currentAsked === 'familySize') {
+      const simpleNum = cleanText.match(/\b\d+\b/);
+      if (simpleNum) {
+        newProfile.familySize = parseInt(simpleNum[0], 10);
+      }
+    }
+
+    return newProfile;
+  };
+
+  // Calculate matched schemes based on extracted profile state
+  const getMatchedSchemes = (prof: ProfileState): Scheme[] => {
+    return schemes.filter(scheme => {
+      let matchCount = 0;
+      let totalChecked = 0;
+
+      if (scheme.criteria.occupations && prof.occupation) {
+        totalChecked++;
+        if (scheme.criteria.occupations.includes(prof.occupation)) matchCount++;
+      }
+      if (scheme.criteria.maxIncome && prof.income) {
+        totalChecked++;
+        if (prof.income <= scheme.criteria.maxIncome) matchCount++;
+      }
+      if (scheme.criteria.minAge && prof.age) {
+        totalChecked++;
+        if (prof.age >= scheme.criteria.minAge) matchCount++;
+      }
+      if (scheme.criteria.maxAge && prof.age) {
+        totalChecked++;
+        if (prof.age <= scheme.criteria.maxAge) matchCount++;
+      }
+      if (scheme.criteria.ruralUrban && scheme.criteria.ruralUrban !== 'Both' && prof.location) {
+        totalChecked++;
+        if (scheme.criteria.ruralUrban === prof.location) matchCount++;
+      }
+
+      // If we don't have details, default match some based on category keywords
+      if (totalChecked === 0) return false;
+      return matchCount / totalChecked >= 0.5;
+    });
+  };
+
+  // Dialog State Machine Response Generator
+  const getStatefulResponse = (text: string, currentProfile: ProfileState): { reply: string; matches: Scheme[]; nextAsk: keyof ProfileState | null } => {
+    // 1. Merge new profile state
+    const extracted = parseEntities(text, lastAsked);
+    const updatedProfile = { ...currentProfile, ...extracted };
+    setProfile(updatedProfile);
+
+    // 2. Identify missing parameters in order of importance
+    let nextAsk: keyof ProfileState | null = null;
+    let reply = '';
     
-    if (inputClean.includes('किसान') || inputClean.includes('farmer') || inputClean.includes('खेती') || inputClean.includes('kisan') || inputClean.includes('rain') || inputClean.includes('बारिश')) {
-      const pmKisan = schemes.find(s => s.id === 'pm-kisan');
-      const pmKusum = schemes.find(s => s.id === 'pm-kusum');
-      return {
-        reply: t("reply.kisan", language),
-        matches: [pmKisan, pmKusum].filter(Boolean) as Scheme[]
-      };
+    if (!updatedProfile.occupation) {
+      nextAsk = 'occupation';
+      reply = language === 'hi'
+        ? "आप क्या काम करते हैं? (जैसे: किसान, सड़क विक्रेता, मजदूर, छात्र, या स्व-रोजगार)"
+        : "What is your occupation? (e.g. Farmer, Street Vendor, Unorganized Worker, Student, Shopkeeper)";
+    } else if (updatedProfile.income === undefined) {
+      nextAsk = 'income';
+      reply = language === 'hi'
+        ? "आपकी पारिवारिक वार्षिक आय (annual income) कितनी है?"
+        : "What is your annual household income? (e.g. 1.5 Lakh, 80,000)";
+    } else if (!updatedProfile.age) {
+      nextAsk = 'age';
+      reply = language === 'hi'
+        ? "आपकी या लाभार्थी की आयु (age) कितनी है?"
+        : "What is your or the beneficiary's age?";
+    } else if (!updatedProfile.location) {
+      nextAsk = 'location';
+      reply = language === 'hi'
+        ? "क्या आप ग्रामीण (village) क्षेत्र में रहते हैं या शहरी (city)?"
+        : "Do you live in a rural (village) or urban (city) area?";
     }
 
-    if (inputClean.includes('चिकित्सा') || inputClean.includes('medical') || inputClean.includes('hospital') || inputClean.includes('स्वास्थ्य') || inputClean.includes('health') || inputClean.includes('बीमारी') || inputClean.includes('इलाज')) {
-      const ayushman = schemes.find(s => s.id === 'ayushman-bharat');
-      const insurance = schemes.find(s => s.id === 'pm-jeevan-suraksha');
-      return {
-        reply: t("reply.health", language),
-        matches: [ayushman, insurance].filter(Boolean) as Scheme[]
-      };
+    // 3. Find matches
+    let matches = getMatchedSchemes(updatedProfile);
+    if (matches.length === 0) {
+      // Fallback to keyword matching
+      const inputClean = text.toLowerCase();
+      if (inputClean.includes('किसान') || inputClean.includes('farmer') || inputClean.includes('खेती') || inputClean.includes('kisan')) {
+        matches = schemes.filter(s => s.id === 'pm-kisan' || s.id === 'pm-kusum');
+      } else if (inputClean.includes('health') || cleanTextContains(inputClean, ['स्वास्थ्य', 'insurance', 'medical'])) {
+        matches = schemes.filter(s => s.id === 'ayushman-bharat' || s.id === 'pm-jeevan-suraksha');
+      } else {
+        matches = schemes.slice(0, 3);
+      }
     }
 
-    if (inputClean.includes('पेंशन') || inputClean.includes('pension') || inputClean.includes('old age') || inputClean.includes('insurance') || inputClean.includes('atal') || inputClean.includes('सुरक्षा')) {
-      const atal = schemes.find(s => s.id === 'atal-pension');
-      const jandhan = schemes.find(s => s.id === 'pm-jandhan');
-      const insurance = schemes.find(s => s.id === 'pm-jeevan-suraksha');
-      return {
-        reply: t("reply.pension", language),
-        matches: [atal, jandhan, insurance].filter(Boolean) as Scheme[]
-      };
+    // If everything is collected, announce potential matches
+    if (!nextAsk) {
+      reply = language === 'hi'
+        ? `आपके जवाबों के आधार पर ${matches.length} योजनाएं potentially suitable (सटीक मिलान) हैं। आप नीचे विवरण देख सकते हैं।`
+        : `Based on your answers, ${matches.length} schemes are potentially suitable for you. Please check the recommendations below.`;
+    } else {
+      // If we just got some new info, prepend acknowledgement
+      let ack = '';
+      if (Object.keys(extracted).length > 0) {
+        const lastKey = Object.keys(extracted)[0];
+        const lastVal = extracted[lastKey as keyof ProfileState];
+        if (lastKey === 'occupation') {
+          ack = language === 'hi' ? `ठीक है, आप ${lastVal === 'Farmer' ? 'किसान' : lastVal} हैं। ` : `Understood, you are a ${lastVal}. `;
+        } else if (lastKey === 'income') {
+          ack = language === 'hi' ? `पारिवारिक आय ₹${lastVal?.toLocaleString()} प्रति वर्ष दर्ज की गई है। ` : `Income recorded as ₹${lastVal?.toLocaleString()} per year. `;
+        } else if (lastKey === 'age') {
+          ack = language === 'hi' ? `आपकी आयु ${lastVal} वर्ष है। ` : `Age recorded as ${lastVal} years. `;
+        } else if (lastKey === 'location') {
+          ack = language === 'hi' ? `स्थान ${lastVal === 'Rural' ? 'ग्रामीण' : 'शहरी'} क्षेत्र। ` : `Location recorded as ${lastVal}. `;
+        }
+      }
+      reply = ack + reply;
     }
 
-    if (inputClean.includes('महिला') || inputClean.includes('बच्ची') || inputClean.includes('girl') || inputClean.includes('daughter') || inputClean.includes('sukanya') || inputClean.includes('matru')) {
-      const ssy = schemes.find(s => s.id === 'sukanya-samriddhi');
-      const matru = schemes.find(s => s.id === 'pm-matru-vandana');
-      const ujjwala = schemes.find(s => s.id === 'pm-ujjwala');
-      return {
-        reply: t("reply.women", language),
-        matches: [ssy, matru, ujjwala].filter(Boolean) as Scheme[]
-      };
-    }
+    return { reply, matches, nextAsk };
+  };
 
-    if (inputClean.includes('गरीब') || inputClean.includes('income') || inputClean.includes('house') || inputClean.includes('घर') || inputClean.includes('awas') || inputClean.includes('solar') || inputClean.includes('बिजली')) {
-      const pmay = schemes.find(s => s.id === 'pm-awas-yojana');
-      const surya = schemes.find(s => s.id === 'pm-surya-ghar');
-      return {
-        reply: t("reply.housing", language),
-        matches: [pmay, surya].filter(Boolean) as Scheme[]
-      };
-    }
-
-    if (inputClean.includes('skill') || inputClean.includes('रोजगार') || inputClean.includes('job') || inputClean.includes('training') || inputClean.includes('mgnrega') || inputClean.includes('vishwakarma')) {
-      const mgnrega = schemes.find(s => s.id === 'mgnrega');
-      const vishwakarma = schemes.find(s => s.id === 'pm-vishwakarma');
-      const pmkvy = schemes.find(s => s.id === 'pm-kaushal-vikas');
-      return {
-        reply: t("reply.jobs", language),
-        matches: [mgnrega, vishwakarma, pmkvy].filter(Boolean) as Scheme[]
-      };
-    }
-
-    // Default general response
-    return {
-      reply: t("reply.default", language),
-      matches: schemes.slice(0, 3)
-    };
+  const cleanTextContains = (text: string, keywords: string[]): boolean => {
+    return keywords.some(k => text.includes(k));
   };
 
   const handleSendMessage = (textToSend: string) => {
@@ -116,7 +248,9 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
     // Simulate response delay
     setTimeout(() => {
-      const result = getSimulatedResponse(textToSend);
+      const result = getStatefulResponse(textToSend, profile);
+      setLastAsked(result.nextAsk);
+      
       const botMsg: Message = {
         sender: 'bot',
         text: result.reply,
@@ -142,7 +276,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         speech.lang = langMapping[language] || 'hi-IN';
         window.speechSynthesis.speak(speech);
       }
-    }, 1550);
+    }, 1200);
   };
 
   // Browser Speech Recognition triggers
@@ -347,55 +481,110 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       <div className="lg:col-span-5 p-6 bg-white dark:bg-slate-800 flex flex-col justify-between">
         <div>
           <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
-            {language === 'hi' ? 'मिलान प्रोफाइल और क्रियाएं' : 'Matched Profile & Actions'}
+            {language === 'hi' ? 'वास्तविक समय प्रोफाइल निष्कर्षण' : 'Real-time Profile Extraction'}
           </span>
           <h4 className="text-base font-bold text-indigo-950 dark:text-white mt-1 mb-4">
-            {language === 'hi' ? 'योग्य योजना त्वरित दृश्य' : 'Eligible Scheme Quick View'}
+            {language === 'hi' ? 'एआई द्वारा निकाली गई जानकारी' : 'Extracted Profile State'}
           </h4>
           
-          <p className="text-xs text-slate-550 dark:text-slate-405 leading-relaxed mb-4">
-            {language === 'hi'
-              ? 'वाणी-सेतु हमारे राष्ट्रीय कल्याण डेटाबेस को फ़िल्टर करने के लिए स्थान, कमाई और परिवार के आकार जैसे कारकों को निकालता है।'
-              : 'Vaani-Setu extracts factors like location, earnings, and family size to filter our national welfare database.'
-            }
-          </p>
-
-          <div className="space-y-3.5">
-            <div className="p-3.5 bg-orange-50/50 dark:bg-orange-955/10 rounded-xl border border-orange-100 dark:border-orange-900/30 text-xs">
-              <span className="font-bold text-orange-850 dark:text-orange-400">
-                {language === 'hi' ? '🎙 वॉयस वेवफॉर्म' : '🎙 Voice Waveform'}
-              </span>
-              <div className="flex items-center gap-1.5 mt-2 h-6">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((val) => (
-                  <span 
-                    key={val} 
-                    className={`w-1 bg-orange-500 rounded-full transition-all duration-300 ${
-                      isListening ? 'animate-bounce h-5' : 'h-2'
-                    }`}
-                    style={{ animationDelay: `${val * 75}ms` }}
-                  />
-                ))}
+          <div className="space-y-3">
+            {/* Occupation */}
+            <div className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
+              profile.occupation 
+                ? 'border-emerald-250 bg-emerald-50/30 dark:bg-emerald-950/10' 
+                : 'border-slate-100 bg-slate-50/50 dark:bg-slate-800/50 opacity-60'
+            }`}>
+              <div className="flex items-center gap-2">
+                <Briefcase className={`h-4 w-4 ${profile.occupation ? 'text-emerald-600' : 'text-slate-400'}`} />
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {language === 'hi' ? 'व्यवसाय' : 'Occupation'}
+                </span>
               </div>
+              <span className={`text-xs font-bold ${profile.occupation ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400'}`}>
+                {profile.occupation 
+                  ? (language === 'hi' 
+                      ? (profile.occupation === 'Farmer' ? 'किसान' : profile.occupation === 'Street Vendor' ? 'सड़क विक्रेता' : profile.occupation === 'Student' ? 'छात्र' : profile.occupation === 'Shopkeeper' ? 'दुकानदार' : 'मजदूर') 
+                      : profile.occupation) 
+                  : (language === 'hi' ? 'प्रतीक्षा करें...' : 'Waiting...')}
+              </span>
             </div>
 
-            <div className="p-3.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900/30 text-xs">
-              <span className="font-bold text-slate-800 dark:text-slate-200 block mb-1">
-                {language === 'hi' ? 'इंटरैक्टिव सहायता पैरामीटर' : 'Interactive Help Parameters'}
+            {/* Income */}
+            <div className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
+              profile.income !== undefined 
+                ? 'border-emerald-250 bg-emerald-50/30 dark:bg-emerald-950/10' 
+                : 'border-slate-100 bg-slate-50/50 dark:bg-slate-800/50 opacity-60'
+            }`}>
+              <div className="flex items-center gap-2">
+                <IndianRupee className={`h-4 w-4 ${profile.income !== undefined ? 'text-emerald-600' : 'text-slate-400'}`} />
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {language === 'hi' ? 'वार्षिक आय' : 'Annual Income'}
+                </span>
+              </div>
+              <span className={`text-xs font-bold ${profile.income !== undefined ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400'}`}>
+                {profile.income !== undefined ? `₹${profile.income.toLocaleString()}` : (language === 'hi' ? 'प्रतीक्षा करें...' : 'Waiting...')}
               </span>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-                {language === 'hi'
-                  ? 'माइक आइकन पर क्लिक करें और हिंदी या अंग्रेजी में बोलें (जैसे "मैं एक गरीब किसान हूँ")। एआई आवाज संश्लेषण मिलान के साथ प्रतिक्रिया करता है।'
-                  : 'Click the microphone icon and speak in Hindi or English (e.g. "I am a poor farmer"). The AI voice synthesis responds with matches.'
-                }
-              </p>
+            </div>
+
+            {/* Age */}
+            <div className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
+              profile.age 
+                ? 'border-emerald-250 bg-emerald-50/30 dark:bg-emerald-950/10' 
+                : 'border-slate-100 bg-slate-50/50 dark:bg-slate-800/50 opacity-60'
+            }`}>
+              <div className="flex items-center gap-2">
+                <Calendar className={`h-4 w-4 ${profile.age ? 'text-emerald-600' : 'text-slate-400'}`} />
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {language === 'hi' ? 'आयु' : 'Age'}
+                </span>
+              </div>
+              <span className={`text-xs font-bold ${profile.age ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400'}`}>
+                {profile.age ? `${profile.age} ${language === 'hi' ? 'वर्ष' : 'years'}` : (language === 'hi' ? 'प्रतीक्षा करें...' : 'Waiting...')}
+              </span>
+            </div>
+
+            {/* Location */}
+            <div className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
+              profile.location 
+                ? 'border-emerald-250 bg-emerald-50/30 dark:bg-emerald-950/10' 
+                : 'border-slate-100 bg-slate-50/50 dark:bg-slate-800/50 opacity-60'
+            }`}>
+              <div className="flex items-center gap-2">
+                <MapPin className={`h-4 w-4 ${profile.location ? 'text-emerald-600' : 'text-slate-400'}`} />
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {language === 'hi' ? 'क्षेत्र' : 'Location'}
+                </span>
+              </div>
+              <span className={`text-xs font-bold ${profile.location ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-400'}`}>
+                {profile.location 
+                  ? (language === 'hi' ? (profile.location === 'Rural' ? 'ग्रामीण' : 'शहरी') : profile.location) 
+                  : (language === 'hi' ? 'प्रतीक्षा करें...' : 'Waiting...')}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-4 p-3.5 bg-orange-50/50 dark:bg-orange-955/10 rounded-xl border border-orange-100 dark:border-orange-900/30 text-xs">
+            <span className="font-bold text-orange-850 dark:text-orange-400 flex items-center gap-1">
+              <span>🎙</span> {language === 'hi' ? 'वॉयस इनपुट वेवफॉर्म' : 'Voice Input Waveform'}
+            </span>
+            <div className="flex items-center gap-1.5 mt-2 h-6">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((val) => (
+                <span 
+                  key={val} 
+                  className={`w-1 bg-orange-500 rounded-full transition-all duration-300 ${
+                    isListening ? 'animate-bounce h-5' : 'h-1.5'
+                  }`}
+                  style={{ animationDelay: `${val * 60}ms` }}
+                />
+              ))}
             </div>
           </div>
         </div>
 
         <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 text-[10px] text-slate-400 dark:text-slate-550 text-center">
           {language === 'hi'
-            ? 'प्रोटोटाइप मिलान केवल सलाह के लिए हैं। अंतिम मंजूरी के लिए आधिकारिक पोर्टल से सत्यापन आवश्यक है।'
-            : 'Prototype matches are advisory. Final approvals require verified official portals.'
+            ? 'वाणी-सेतु आपकी प्राकृतिक भाषा से स्वचालित रूप से मापदंडों को निकालता है।'
+            : 'Vaani-Setu automatically extracts eligibility parameters from your natural speech.'
           }
         </div>
       </div>

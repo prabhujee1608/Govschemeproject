@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Menu, X, Landmark, Globe, Sun, Moon, LogIn, LogOut, User } from 'lucide-react';
+import { Menu, X, Landmark, Globe, Sun, Moon, LogIn, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { t } from '../data/translations';
 
 interface NavbarProps {
@@ -46,6 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems = [
     { id: 'home' },
+    { id: 'dashboard' },
     { id: 'how-it-works' },
     { id: 'schemes' },
     { id: 'about' },
@@ -59,7 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Logo */}
         <button 
           onClick={() => setCurrentTab('home')}
-          className="flex items-center gap-2 text-xl font-bold tracking-tight text-slate-950 dark:text-white transition hover:opacity-90"
+          className="flex items-center gap-2 text-xl font-bold tracking-tight text-slate-955 dark:text-white transition hover:opacity-90"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-orange-500 via-white to-emerald-600 p-[2px] shadow-sm">
             <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-indigo-950 dark:bg-slate-900 text-white">
@@ -83,7 +84,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   : 'text-slate-600 dark:text-slate-350'
               }`}
             >
-              {t(translationKeys[item.id], language)}
+              {translationKeys[item.id] && t(translationKeys[item.id], language)
+                ? t(translationKeys[item.id], language)
+                : item.id === 'dashboard'
+                  ? (language === 'hi' ? 'डैशबोर्ड' : 'Dashboard')
+                  : item.id
+              }
             </button>
           ))}
         </nav>
@@ -105,8 +111,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               ))}
             </select>
           </div>
-
-
 
           {/* Auth */}
           {user ? (
@@ -162,47 +166,41 @@ export const Navbar: React.FC<NavbarProps> = ({
               ))}
             </select>
           </div>
+
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-slate-600 hover:text-slate-900 focus:outline-none"
+            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 focus:outline-none"
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
+
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden border-b border-orange-100 bg-white px-4 pb-4 pt-2">
-          <div className="flex flex-col gap-3">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setCurrentTab(item.id);
-                  setIsOpen(false);
-                }}
-                className={`text-left text-sm font-medium py-1.5 transition-colors ${
-                  currentTab === item.id ? 'text-orange-600 font-semibold border-l-2 border-orange-600 pl-2' : 'text-slate-600 pl-2'
-                }`}
-              >
-                {t(translationKeys[item.id], language)}
-              </button>
-            ))}
+        <div className="md:hidden border-t border-slate-200 bg-white p-4 space-y-3 shadow-inner">
+          {navItems.map((item) => (
             <button
+              key={item.id}
               onClick={() => {
+                setCurrentTab(item.id);
                 setIsOpen(false);
-                setCurrentTab('home');
-                setTimeout(() => {
-                  const element = document.getElementById('ai-assistant');
-                  if (element) element.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
               }}
-              className="w-full rounded-lg bg-orange-600 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-orange-700 transition"
+              className={`block w-full text-left py-2 px-3 text-sm font-semibold rounded-lg transition-colors ${
+                currentTab === item.id
+                  ? 'bg-orange-50 text-orange-600'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
             >
-              {t("nav.try", language)}
+              {translationKeys[item.id] && t(translationKeys[item.id], language)
+                ? t(translationKeys[item.id], language)
+                : item.id === 'dashboard'
+                  ? (language === 'hi' ? 'डैशबोर्ड' : 'Dashboard')
+                  : item.id
+              }
             </button>
-          </div>
+          ))}
         </div>
       )}
     </header>

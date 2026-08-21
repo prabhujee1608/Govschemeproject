@@ -45,7 +45,8 @@ export default function Home() {
   const [selectedScheme, setSelectedScheme] = React.useState<Scheme | null>(null);
   const [checklistScheme, setChecklistScheme] = React.useState<Scheme | null>(null);
   const [timelineScheme, setTimelineScheme] = React.useState<Scheme | null>(null);
-  const [eligibilityMatches, setEligibilityMatches] = React.useState<Array<{ scheme: Scheme; score: number; reason: string }> | null>(null);
+  const [eligibilityMatches, setEligibilityMatches] = React.useState<any[] | null>(null);
+  const [expandedScheme, setExpandedScheme] = React.useState<string | null>(null);
 
   // User Auth States
   const [user, setUser] = React.useState<{ name: string } | null>(null);
@@ -363,6 +364,123 @@ export default function Home() {
           </div>
         )}
 
+        {/* Dashboard Tab */}
+        {currentTab === 'dashboard' && (
+          <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="mb-8">
+              <span className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest block mb-1">
+                {language === 'hi' ? 'आपका व्यक्तिगत लाभ हब' : 'YOUR PERSONAL BENEFITS HUB'}
+              </span>
+              <h2 className="text-3xl font-extrabold text-indigo-950 dark:text-white sm:text-4xl">
+                {language === 'hi' ? 'मेरा सरकारी लाभ डैशबोर्ड' : 'MY GOVERNMENT BENEFITS'}
+              </h2>
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                {language === 'hi' 
+                  ? 'अपनी स्थिति के आधार पर अनुकूलित कल्याणकारी योजनाओं और दस्तावेज़ आवश्यकताओं की निगरानी करें।' 
+                  : 'Track your customized welfare matches and document requirements based on your situation.'}
+              </p>
+            </div>
+
+            {/* Dashboard Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              {[
+                { 
+                  label: language === 'hi' ? 'संभावित योजनाएं' : 'Potential Schemes', 
+                  val: eligibilityMatches ? eligibilityMatches.length : 7, 
+                  desc: language === 'hi' ? 'पात्रता मानदंडों के करीब' : 'Near matching criteria',
+                  bg: 'bg-indigo-50 border-indigo-100 text-indigo-955'
+                },
+                { 
+                  label: language === 'hi' ? 'उच्च मिलान' : 'High Match', 
+                  val: eligibilityMatches ? eligibilityMatches.filter(m => m.score >= 70).length : 4, 
+                  desc: language === 'hi' ? '70% से अधिक मिलान स्कोर' : 'Score >= 70%',
+                  bg: 'bg-emerald-50 border-emerald-100 text-emerald-955'
+                },
+                { 
+                  label: language === 'hi' ? 'अनुपलब्ध दस्तावेज़' : 'Documents Missing', 
+                  val: eligibilityMatches ? eligibilityMatches.filter(m => m.score >= 70 && !m.breakdown.documentsPassed).length : 3, 
+                  desc: language === 'hi' ? 'सत्यापन आवश्यक है' : 'Needs upload / action',
+                  bg: 'bg-amber-50 border-amber-100 text-amber-955'
+                },
+                { 
+                  label: language === 'hi' ? 'लंबित आवेदन' : 'Applications Pending', 
+                  val: 2, 
+                  desc: language === 'hi' ? 'सिम्युलेटेड स्थिति' : 'Simulated filing progress',
+                  bg: 'bg-slate-50 border-slate-205 text-slate-900'
+                }
+              ].map((stat, idx) => (
+                <div key={idx} className={`p-5 rounded-2xl border ${stat.bg} shadow-sm`}>
+                  <span className="text-xs font-semibold uppercase tracking-wider block opacity-75">{stat.label}</span>
+                  <span className="text-3xl font-black block mt-2.5 mb-1">{stat.val}</span>
+                  <span className="text-[10px] opacity-80 block">{stat.desc}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Recommendations Section */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-205 p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-indigo-955 dark:text-white mb-4 flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-orange-500" />
+                {language === 'hi' ? 'शीर्ष अनुशंसित योजनाएं' : 'Recommended Schemes'}
+              </h3>
+
+              <div className="space-y-4">
+                {(eligibilityMatches || [
+                  {
+                    scheme: schemesData.find(s => s.id === 'pm-kisan') || schemesData[0],
+                    score: 92,
+                    reason: language === 'hi' ? 'सभी कृषि और भूमि स्वामित्व मानदंड पूरे होते हैं।' : 'Meets all land ownership criteria.'
+                  },
+                  {
+                    scheme: schemesData.find(s => s.id === 'pm-kusum') || schemesData[6],
+                    score: 86,
+                    reason: language === 'hi' ? 'सोलर पंप स्थापना के लिए उच्च स्कोर।' : 'High score for solar pump setup.'
+                  },
+                  {
+                    scheme: schemesData.find(s => s.id === 'ayushman-bharat') || schemesData[1],
+                    score: 81,
+                    reason: language === 'hi' ? 'निम्न-आय स्वास्थ्य बीमा मानदंड पूर्ण।' : 'Low income healthcare matching.'
+                  }
+                ]).map((match: any, index: number) => {
+                  const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅';
+                  return (
+                    <div key={match.scheme.id} className="p-4 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-slate-200/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-orange-200 transition">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl flex-shrink-0">{medal}</span>
+                        <div>
+                          <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                            {t("cat." + match.scheme.category, language)}
+                          </span>
+                          <h4 className="text-sm font-bold text-indigo-955 dark:text-white">{match.scheme.name}</h4>
+                          <p className="text-xs text-slate-550 mt-1 max-w-xl">{match.reason}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                          match.score >= 80 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                        }`}>
+                          {match.score}% {language === 'hi' ? 'मिलान' : 'Match'}
+                        </span>
+                        
+                        <button
+                          onClick={() => {
+                            setChecklistScheme(match.scheme);
+                            setCurrentTab('documents');
+                          }}
+                          className="px-3.5 py-1.5 bg-indigo-950 hover:bg-indigo-900 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                        >
+                          {language === 'hi' ? 'दस्तावेज़' : 'Documents'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Schemes Tab */}
         {currentTab === 'schemes' && (
           <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -420,51 +538,148 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-4">
-                  {eligibilityMatches.map(({ scheme, score, reason }) => (
-                    <div key={scheme.id} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow transition">
-                      <div className="flex justify-between items-start gap-4">
-                        <div>
-                          <span className="inline-block text-[10px] font-bold text-orange-600 uppercase tracking-wide mb-1">
-                            {t("cat." + scheme.category, language)}
-                          </span>
-                          <h4 className="text-base font-bold text-indigo-950">{scheme.name}</h4>
-                          <p className="text-xs text-slate-600 mt-2">{reason}</p>
+                  {eligibilityMatches.map(({ scheme, score, reason, breakdown, whyRecommended, whyNotEligible, circumstancesChangeAdvice }) => {
+                    const isExpanded = expandedScheme === scheme.id;
+                    return (
+                      <div key={scheme.id} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow transition">
+                        <div className="flex justify-between items-start gap-4">
+                          <div>
+                            <span className="inline-block text-[10px] font-bold text-orange-600 uppercase tracking-wide mb-1">
+                              {t("cat." + scheme.category, language)}
+                            </span>
+                            <h4 className="text-base font-bold text-indigo-950">{scheme.name}</h4>
+                            <p className="text-xs text-slate-600 mt-2">{reason}</p>
+                          </div>
+                          <div className="text-right flex-shrink-0 flex flex-col items-end gap-1.5">
+                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                              score >= 80 
+                                ? 'bg-emerald-100 text-emerald-800' 
+                                : score >= 50 
+                                  ? 'bg-amber-100 text-amber-800' 
+                                  : 'bg-red-100 text-red-800'
+                            }`}>
+                              {score}% {language === 'hi' ? 'पात्रता' : 'Eligibility'}
+                            </span>
+                            
+                            <button
+                              onClick={() => setExpandedScheme(isExpanded ? null : scheme.id)}
+                              className="text-[10px] font-bold text-indigo-950 hover:underline flex items-center gap-0.5"
+                            >
+                              {isExpanded ? (language === 'hi' ? 'विवरण छुपाएं' : 'Hide Details') : (language === 'hi' ? 'विवरण देखें' : 'View Details')}
+                            </button>
+                          </div>
                         </div>
-                        <div className="text-right flex-shrink-0">
-                          <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-                            score >= 80 
-                              ? 'bg-emerald-100 text-emerald-800' 
-                              : score >= 50 
-                                ? 'bg-amber-100 text-amber-800' 
-                                : 'bg-slate-100 text-slate-700'
-                          }`}>
-                            {score}% {language === 'hi' ? 'मिलान' : 'Match'}
-                          </span>
-                        </div>
-                      </div>
 
-                      <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
-                        <button
-                          onClick={() => {
-                            setChecklistScheme(scheme);
-                            setCurrentTab('documents');
-                          }}
-                          className="flex-1 rounded-lg bg-indigo-950 py-2 px-3 text-xs font-semibold text-white hover:bg-indigo-900 transition flex items-center justify-center gap-1.5"
-                        >
-                          {language === 'hi' ? 'दस्तावेज़ चेकलिस्ट' : 'Checklist'}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setTimelineScheme(scheme);
-                            setCurrentTab('timeline');
-                          }}
-                          className="flex-1 rounded-lg border border-slate-300 py-2 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
-                        >
-                          {language === 'hi' ? 'आवेदन मार्गदर्शिका' : 'Filing Guide'}
-                        </button>
+                        {/* Explainable Eligibility Breakdown Accordion */}
+                        {isExpanded && breakdown && (
+                          <div className="mt-4 pt-4 border-t border-slate-100 space-y-4 text-xs">
+                            <div className="bg-slate-50 dark:bg-slate-900/30 rounded-xl p-3.5 border border-slate-150">
+                              <h5 className="font-bold text-slate-800 dark:text-slate-250 mb-2">
+                                {language === 'hi' ? 'पात्रता मानदंड गणना' : 'Eligibility Criteria Computation'}
+                              </h5>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700 dark:text-slate-300">
+                                <div className="flex justify-between items-center py-1 border-b border-slate-200/50">
+                                  <span>{language === 'hi' ? 'व्यवसाय मिलान (Occupation)' : 'Occupation Match'}</span>
+                                  <span className="font-semibold flex items-center gap-1">
+                                    {breakdown.occupationPassed ? '✓' : '❌'} {breakdown.occupationScore}/{breakdown.occupationMax}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between items-center py-1 border-b border-slate-200/50">
+                                  <span>{language === 'hi' ? 'आय मिलान (Income)' : 'Income Match'}</span>
+                                  <span className="font-semibold flex items-center gap-1">
+                                    {breakdown.incomePassed ? '✓' : '❌'} {breakdown.incomeScore}/{breakdown.incomeMax}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between items-center py-1 border-b border-slate-200/50">
+                                  <span>{language === 'hi' ? 'आयु मानदंड (Age)' : 'Age Criteria'}</span>
+                                  <span className="font-semibold flex items-center gap-1">
+                                    {breakdown.agePassed ? '✓' : '❌'} {breakdown.ageScore}/{breakdown.ageMax}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between items-center py-1 border-b border-slate-200/50">
+                                  <span>{language === 'hi' ? 'स्थान मानदंड (Location)' : 'Location Criteria'}</span>
+                                  <span className="font-semibold flex items-center gap-1">
+                                    {breakdown.locationPassed ? '✓' : '❌'} {breakdown.locationScore}/{breakdown.locationMax}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between items-center py-1 border-b border-slate-200/50">
+                                  <span>{language === 'hi' ? 'दस्तावेज़ उपलब्धता (Documents)' : 'Documents checklist'}</span>
+                                  <span className="font-semibold flex items-center gap-1 text-amber-600">
+                                    {breakdown.documentsPassed ? '✓' : '⚠'} {breakdown.documentsScore}/{breakdown.documentsMax}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Why recommended */}
+                            {whyRecommended && whyRecommended.length > 0 && (
+                              <div>
+                                <h5 className="font-bold text-emerald-800 dark:text-emerald-400 mb-1.5 flex items-center gap-1">
+                                  <span>✓</span> {language === 'hi' ? 'क्यों सिफारिश की गई?' : 'Why recommended?'}
+                                </h5>
+                                <ul className="list-none pl-1 space-y-1.5 text-slate-650">
+                                  {whyRecommended.map((rec: string, idx: number) => (
+                                    <li key={idx} className="flex items-start gap-1.5">
+                                      <span className="text-emerald-500 font-bold">✓</span>
+                                      <span>{rec}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {/* Why NOT eligible */}
+                            {whyNotEligible && whyNotEligible.length > 0 && (
+                              <div className="p-3 bg-red-50/50 dark:bg-red-955/10 rounded-xl border border-red-100">
+                                <h5 className="font-bold text-red-800 dark:text-red-400 mb-1.5 flex items-center gap-1">
+                                  <span>❌</span> {language === 'hi' ? 'आप पात्र क्यों नहीं हैं?' : 'Why you\'re not eligible'}
+                                </h5>
+                                <ul className="list-none pl-1 space-y-1.5 text-slate-650">
+                                  {whyNotEligible.map((not: string, idx: number) => (
+                                    <li key={idx} className="flex items-start gap-1.5">
+                                      <span className="text-red-500 font-bold">❌</span>
+                                      <span>{not}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {/* Circumstances Change Advice */}
+                            {circumstancesChangeAdvice && (
+                              <div className="p-3 bg-indigo-50/40 rounded-xl border border-indigo-100 text-indigo-900">
+                                <h5 className="font-bold mb-1 flex items-center gap-1">
+                                  <span>→</span> {language === 'hi' ? 'आप योग्य हो सकते हैं यदि:' : 'You may become eligible if:'}
+                                </h5>
+                                <p className="text-[11px] leading-relaxed">{circumstancesChangeAdvice}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
+                          <button
+                            onClick={() => {
+                              setChecklistScheme(scheme);
+                              setCurrentTab('documents');
+                            }}
+                            className="flex-1 rounded-lg bg-indigo-950 py-2 px-3 text-xs font-semibold text-white hover:bg-indigo-900 transition flex items-center justify-center gap-1.5"
+                          >
+                            {language === 'hi' ? 'दस्तावेज़ चेकलिस्ट' : 'Checklist'}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setTimelineScheme(scheme);
+                              setCurrentTab('timeline');
+                            }}
+                            className="flex-1 rounded-lg border border-slate-300 py-2 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                          >
+                            {language === 'hi' ? 'आवेदन मार्गदर्शिका' : 'Filing Guide'}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="text-center">
@@ -485,6 +700,7 @@ export default function Home() {
           <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <DocumentChecklist 
               scheme={checklistScheme}
+              recommendedSchemes={eligibilityMatches?.map((m: any) => m.scheme) || []}
               onBack={() => {
                 setCurrentTab('schemes');
                 setChecklistScheme(null);

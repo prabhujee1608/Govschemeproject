@@ -5,7 +5,31 @@ import { t } from '../data/translations';
 
 interface EligibilityCheckerProps {
   schemes: Scheme[];
-  onFinishCheck: (matches: Array<{ scheme: Scheme; score: number; reason: string }>) => void;
+  onFinishCheck: (matches: Array<{ 
+    scheme: Scheme; 
+    score: number; 
+    reason: string;
+    breakdown: {
+      occupationScore: number;
+      occupationMax: number;
+      occupationPassed: boolean;
+      incomeScore: number;
+      incomeMax: number;
+      incomePassed: boolean;
+      ageScore: number;
+      ageMax: number;
+      agePassed: boolean;
+      locationScore: number;
+      locationMax: number;
+      locationPassed: boolean;
+      documentsScore: number;
+      documentsMax: number;
+      documentsPassed: boolean;
+    };
+    whyRecommended: string[];
+    whyNotEligible: string[];
+    circumstancesChangeAdvice?: string;
+  }>) => void;
   language: string;
 }
 
@@ -27,70 +51,135 @@ export const EligibilityChecker: React.FC<EligibilityCheckerProps> = ({
 
   const calculateMatches = () => {
     const results = schemes.map((scheme) => {
-      let score = 100;
-      const reasons: string[] = [];
+      const whyRecommended: string[] = [];
+      const whyNotEligible: string[] = [];
 
-      // Age check
+      // 1. Occupation Match (30 pts)
+      let occupationScore = 30;
+      let occupationPassed = true;
+      if (scheme.criteria.occupations) {
+        if (scheme.criteria.occupations.includes(occupation)) {
+          whyRecommended.push(language === 'hi' ? `व्यवसाय: ${occupation === 'Farmer' ? 'किसान' : occupation}` : `Occupation: ${occupation}`);
+        } else {
+          occupationScore = 0;
+          occupationPassed = false;
+          whyNotEligible.push(language === 'hi' ? 'व्यवसाय पात्रता मानदंड से मेल नहीं खाता' : 'Occupation does not match requirement');
+        }
+      } else {
+        whyRecommended.push(language === 'hi' ? 'सभी व्यवसायों के लिए खुला है' : 'Open to all occupations');
+      }
+
+      // 2. Income Match (20 pts)
+      let incomeScore = 20;
+      let incomePassed = true;
+      if (scheme.criteria.maxIncome) {
+        if (income <= scheme.criteria.maxIncome) {
+          whyRecommended.push(language === 'hi' ? `आय सीमा के भीतर है (₹${income.toLocaleString()} <= ₹${scheme.criteria.maxIncome.toLocaleString()})` : `Meets income criteria`);
+        } else {
+          incomeScore = 0;
+          incomePassed = false;
+          whyNotEligible.push(language === 'hi' ? `वार्षिक आय सीमा (₹${scheme.criteria.maxIncome.toLocaleString()}) से अधिक है` : `Income exceeds threshold of ₹${scheme.criteria.maxIncome.toLocaleString()}`);
+        }
+      } else {
+        whyRecommended.push(language === 'hi' ? 'कोई आय सीमा नहीं' : 'No income threshold');
+      }
+
+      // 3. Age Match (15 pts)
+      let ageScore = 15;
+      let agePassed = true;
       if (scheme.criteria.minAge && age < scheme.criteria.minAge) {
-        score -= 20;
-        reasons.push(language === 'hi' 
-          ? `न्यूनतम आयु ${scheme.criteria.minAge} वर्ष आवश्यक है (आपकी आयु: ${age} वर्ष)`
-          : `Minimum age required is ${scheme.criteria.minAge} (You are ${age})`
-        );
+        ageScore = 0;
+        agePassed = false;
+        whyNotEligible.push(language === 'hi' ? `न्यूनतम आयु ${scheme.criteria.minAge} वर्ष से कम है` : `Age is below minimum required (${scheme.criteria.minAge})`);
       }
       if (scheme.criteria.maxAge && age > scheme.criteria.maxAge) {
-        score -= 20;
-        reasons.push(language === 'hi'
-          ? `अधिकतम आयु सीमा ${scheme.criteria.maxAge} वर्ष है (आपकी आयु: ${age} वर्ष)`
-          : `Maximum age limit is ${scheme.criteria.maxAge} (You are ${age})`
-        );
+        ageScore = 0;
+        agePassed = false;
+        whyNotEligible.push(language === 'hi' ? `अधिकतम आयु ${scheme.criteria.maxAge} वर्ष से अधिक है` : `Age exceeds maximum allowed (${scheme.criteria.maxAge})`);
+      }
+      if (agePassed) {
+        whyRecommended.push(language === 'hi' ? `आयु पात्रता सीमा में है (${age} वर्ष)` : `Meets age criteria (${age} years)`);
       }
 
-      // Gender check
-      if (scheme.criteria.genders && !scheme.criteria.genders.includes(gender)) {
-        score -= 30;
-        reasons.push(language === 'hi'
-          ? `मुख्य रूप से केवल ${scheme.criteria.genders.map(g => g === 'Female' ? 'महिलाओं' : g === 'Male' ? 'पुरुषों' : 'अन्य').join(', ')} के लिए केंद्रित है`
-          : `Targeted primarily for ${scheme.criteria.genders.join(', ')}`
-        );
+      // 4. Location Match (15 pts)
+      let locationScore = 15;
+      let locationPassed = true;
+      if (scheme.criteria.ruralUrban && scheme.criteria.ruralUrban !== 'Both') {
+        if (scheme.criteria.ruralUrban === ruralUrban) {
+          whyRecommended.push(language === 'hi' ? `क्षेत्र से मेल खाता है (${ruralUrban === 'Rural' ? 'ग्रामीण' : 'शहरी'})` : `Location matches (${ruralUrban})`);
+        } else {
+          locationScore = 0;
+          locationPassed = false;
+          whyNotEligible.push(language === 'hi' ? `केवल ${scheme.criteria.ruralUrban === 'Rural' ? 'ग्रामीण' : 'शहरी'} क्षेत्रों के लिए उपलब्ध है` : `Only available in ${scheme.criteria.ruralUrban} areas`);
+        }
+      } else {
+        whyRecommended.push(language === 'hi' ? 'सभी क्षेत्रों में उपलब्ध है' : 'Available for all regions');
       }
 
-      // Occupation check
-      if (scheme.criteria.occupations && !scheme.criteria.occupations.includes(occupation)) {
-        score -= 25;
-        reasons.push(language === 'hi'
-          ? `विशेष रूप से इन व्यवसायों के लिए अनुकूलित है: ${scheme.criteria.occupations.map(o => o === 'Farmer' ? 'किसान' : o).join(', ')}`
-          : `Tailored for occupations: ${scheme.criteria.occupations.join(', ')}`
-        );
+      // 5. Documents Match (20 pts)
+      let documentsScore = 20;
+      let documentsPassed = true;
+      const missingDocs: string[] = [];
+
+      // Determine typical missing documents based on occupation / criteria
+      if (scheme.id === 'pm-kisan' || scheme.id === 'pm-kusum') {
+        documentsScore = 12; // missing land documents
+        documentsPassed = false;
+        missingDocs.push(language === 'hi' ? 'भूमि स्वामित्व दस्तावेज (Land Record)' : 'Land Ownership Documents');
+      } else if (scheme.criteria.maxIncome && incomeScore > 0) {
+        // e.g. needs income certificate
+        documentsScore = 15;
+        documentsPassed = false;
+        missingDocs.push(language === 'hi' ? 'आय प्रमाण पत्र (Income Certificate)' : 'Income Certificate');
       }
 
-      // Income check
-      if (scheme.criteria.maxIncome && income > scheme.criteria.maxIncome) {
-        score -= 35;
-        reasons.push(language === 'hi'
-          ? `अधिकतम आय सीमा ₹${scheme.criteria.maxIncome.toLocaleString()} है (आपकी आय: ₹${income.toLocaleString()})`
-          : `Income threshold is ₹${scheme.criteria.maxIncome.toLocaleString()} (Your income: ₹${income.toLocaleString()})`
-        );
+      if (documentsPassed) {
+        whyRecommended.push(language === 'hi' ? 'आवश्यक पहचान पत्र उपलब्ध है' : 'Required identity proof available');
+      } else {
+        missingDocs.forEach(doc => {
+          whyNotEligible.push(language === 'hi' ? `${doc} आवश्यक है` : `${doc} required`);
+        });
       }
 
-      // Rural/Urban check
-      if (scheme.criteria.ruralUrban && scheme.criteria.ruralUrban !== 'Both' && scheme.criteria.ruralUrban !== ruralUrban) {
-        score -= 15;
-        reasons.push(language === 'hi'
-          ? `${scheme.criteria.ruralUrban === 'Rural' ? 'ग्रामीण' : 'शहरी'} क्षेत्रों में ही उपलब्ध है`
-          : `Available in ${scheme.criteria.ruralUrban} regions`
-        );
-      }
+      const totalScore = occupationScore + incomeScore + ageScore + locationScore + documentsScore;
+      const reasonStr = whyNotEligible.length > 0
+        ? (language === 'hi' 
+            ? `पात्रता ${totalScore}%: कुछ मानदंड अपूर्ण हैं।` 
+            : `Eligibility: ${totalScore}%. Some criteria not met.`)
+        : (language === 'hi' 
+            ? "सभी जनसांख्यिकीय और वित्तीय मानदंडों को पूरा करता है।" 
+            : "Matches all demographic and financial criteria.");
 
-      const matchScore = Math.max(20, score);
-      const reasonStr = reasons.length > 0 
-        ? (language === 'hi' ? `अधिकांश मानदंड पूरे होते हैं। ${reasons[0]}` : `Meets most criteria. ${reasons[0]}`)
-        : (language === 'hi' ? "सभी जनसांख्यिकीय और वित्तीय मानदंडों को पूरा करता है।" : "Matches all demographic and financial criteria criteria criteria.");
+      const circumstancesChangeAdvice = whyNotEligible.length > 0
+        ? (language === 'hi' 
+            ? "यदि आपकी परिस्थितियां बदलती हैं (जैसे आय सीमा में आना या आवश्यक दस्तावेज अपडेट करना) तो आप पात्र हो सकते हैं।" 
+            : "You may become eligible if your circumstances change (e.g. income falls within range or updating missing documents).")
+        : undefined;
 
       return {
         scheme,
-        score: matchScore,
-        reason: reasonStr
+        score: totalScore,
+        reason: reasonStr,
+        breakdown: {
+          occupationScore,
+          occupationMax: 30,
+          occupationPassed,
+          incomeScore,
+          incomeMax: 20,
+          incomePassed,
+          ageScore,
+          ageMax: 15,
+          agePassed,
+          locationScore,
+          locationMax: 15,
+          locationPassed,
+          documentsScore,
+          documentsMax: 20,
+          documentsPassed
+        },
+        whyRecommended,
+        whyNotEligible,
+        circumstancesChangeAdvice
       };
     });
 
